@@ -225,6 +225,12 @@
     display:flex;
     justify-content:space-around;
 }
+.box-h-800{
+    /*display: flex;*/
+    max-width:800px;
+    margin:0 auto;
+    justify-content:center;
+}
 .box-h-992{
     /*display: flex;*/
     max-width:992px;
