@@ -1,3 +1,3 @@
-# JGC-Sirius.github.io
+# SiriusGG.github.io
 
-The code for the website siriusgg.com
+Website code for siriusgg.com
