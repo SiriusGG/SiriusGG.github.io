@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://www.siriusgg.com/sitemap.xml
+Sitemap: https://siriusgg.com/sitemap.xml

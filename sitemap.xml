@@ -1,6 +1,27 @@
-https://www.siriusgg.com
-https://youtube.siriusgg.com
-https://yt.siriusgg.com
-https://twitch.siriusgg.com
-https://ttv.siriusgg.com
-https://www.siriusgg.com/games
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://siriusgg.com</loc>
+  </url>
+  <url>
+    <loc>https://siriusgg.com/imprint/</loc>
+  </url>
+  <url>
+    <loc>https://siriusgg.com/stac/</loc>
+  </url>
+  <url>
+    <loc>https://siriusgg.com/stac/docs/HOW_TO.html</loc>
+  </url>
+  <url>
+    <loc>https://siriusgg.com/stac/docs/HOW_TO_DEV.html</loc>
+  </url>
+  <url>
+    <loc>https://siriusgg.com/stac/docs/HOW_TO_PATH.html</loc>
+  </url>
+  <url>
+    <loc>https://siriusgg.com/stac/docs/HOW_TO_STEAMING.html</loc>
+  </url>
+  <url>
+    <loc>https://siriusgg.com/stac/docs/HOW_TO_USER.html</loc>
+  </url>
+</urlset>
