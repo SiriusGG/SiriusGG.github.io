@@ -19,13 +19,17 @@ body {
   margin: 0;
 }
 
+a, img, h1, h2, h3, h4, h5, h6, div, nav, main {
+  margin: 0;
+  padding: 0;
+}
+
 .display-none {
   display: none !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin: 0;
-  padding: 0;
+.header-image {
+  width: 100%;
 }
 
 .full-width {
