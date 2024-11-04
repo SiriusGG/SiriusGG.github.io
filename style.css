@@ -17,9 +17,20 @@ body {
   min-height: 100dvh;
   width: 100%;
   margin: 0;
+  font-family: "Times New Roman", Times, "Georgia", "DejaVu Serif", "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
-a, img, h1, h2, h3, h4, h5, h6, div, nav, main {
+h1,
+.h1-a,
+.h1-a:visited,
+.h1-a:active,
+.h1-a:hover,
+.h1-a:target,
+h2 {
+  font-family: 'Lucida Grande', 'Segoe UI', 'Verdana', Arial, sans-serif;
+}
+
+a, img, h1, h2, h3, h4, h5, h6, div, nav, main, svg {
   margin: 0;
   padding: 0;
 }
@@ -58,7 +69,6 @@ h1.title > a:active,
 h1.title > a:hover,
 h1.title > a:target {
   text-decoration: none;
-  font-family: 'Lucida Grande', sans-serif;
   font-size: var(--title-font-size-mobile);
 
   @media (min-width: 440px) and (max-width: 575.98px) {
@@ -87,7 +97,6 @@ h2.slogan {
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  font-family: 'Lucida Grande', sans-serif;
   font-size: 16px;
   font-weight: 400;
 
@@ -168,8 +177,8 @@ h3 {
 
 .thin-border {
   border-style: solid;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-width: 1px;
+  border-color: var(--color-corporate-1);
+  border-width: 2px;
   border-radius: 16px;
   padding: 16px;
 }
@@ -237,10 +246,11 @@ h3 {
 
 .footer {
   display: flex;
-  background: var(--header-gradient);
-  color: var(--color-header-bg);
   flex-direction: row;
   justify-content: center;
+  align-items: center;
+  background: var(--header-gradient);
+  color: var(--color-header-bg);
   margin-top: auto;
 }
 
