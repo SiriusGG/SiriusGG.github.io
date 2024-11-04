@@ -7,6 +7,7 @@
   --title-font-size-desktop: 128px;
   --color-corporate-1: rgb(15, 121, 208);
   --color-corporate-2: rgb(15, 121, 208);
+  --color-white-80: rgba(255, 255, 255, 0.8);
   --color-header-bg: rgb(55, 55, 55);
   --header-gradient: linear-gradient(to top, #373737, #212121);
 }
@@ -254,21 +255,14 @@ h3 {
   margin-top: auto;
 }
 
-.footer > p {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-.black-outlined-text {
-  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
-}
-
 .footer-link,
 .footer-link:visited,
 .footer-link:active,
 .footer-link:hover,
 .footer-link:target {
-  color: white;
+  color: var(--color-white-80);
   font-size: larger;
   text-transform: capitalize;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
