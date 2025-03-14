@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+}
+
+.margin-a-p-0 > a > p {
+  margin: 0;
+}
+
+.line-height-a-p-1-5 > a > p {
+  line-height: 1.5;
+}
+
+.v-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.horizontal-center {
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-a-p > a > p {
+  text-align: center;
+}
+
+.gap-16 {
+  gap: 16px;
+}
+
+.width-90 {
+  width: 90%;
+}
+
+.vert-large-spacing {
+  height: 25px;
+}
