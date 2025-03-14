@@ -841,7 +841,7 @@ function startRound() {
         Renderer.showWarningDialog(warningDialog, dialogMessage, "P2 has an empty grid. Cannot start.");
         return;
     }
-    unregisterEventListeners();
+    unregisterMainMenuEventListeners();
     gameHasEndedManually = false;
     Grid.gridCopy(fullGrid, initialGrid);
     Renderer.setDisplay(leftBox, 'none');
@@ -882,52 +882,70 @@ function startRound() {
     }
     advanceAndCheck();
 }
+function exportGridHandler() {
+    FileIO.exportGrid(fullGrid, C.SAVE_FILE_VERSION, C.FILE_EXTENSION);
+}
+function importP1GridHandler(event) {
+    FileIO.importFile(event, 0, fullGrid);
+}
+function importP2GridHandler(event) {
+    FileIO.importFile(event, 1, fullGrid);
+}
+function dialogOkHandler() {
+    Renderer.setDisplay(warningDialog, 'none');
+}
 function setupEventListeners() {
+    // validate all buttons and fields exist
     if (!canvas)
         return;
-    unregisterEventListeners();
+    if (!continueButton)
+        return;
+    if (!newGameButton)
+        return;
+    if (!generateP1GridButton)
+        return;
+    if (!generateP2GridButton)
+        return;
+    if (!exportButton)
+        return;
+    if (!importP1GridButton)
+        return;
+    if (!clearButton)
+        return;
+    if (!importP2GridButton)
+        return;
+    if (!playButton)
+        return;
+    if (!dialogOkButton)
+        return;
+    if (!mirrorP1GridButton)
+        return;
+    // unregister all existing event listeners
+    unregisterMainMenuEventListeners();
+    continueButton.removeEventListener('click', continueGame);
+    newGameButton.removeEventListener('click', newGame);
+    // build the canvas handler functions
     Placement.setupHandlers(fullGrid, canvas, ctx, cellSize);
+    // add new event listeners
     // @ts-ignore
     canvas.addEventListener('mousedown', Placement.canvasMouseDownHandler);
     // @ts-ignore
     canvas.addEventListener('mousemove', Placement.canvasMouseMoveHandler);
     canvas.addEventListener('mouseup', Placement.endDrag);
     canvas.addEventListener('mouseleave', Placement.endDrag);
-    if (!generateP1GridButton)
-        return;
     generateP1GridButton.addEventListener('click', Grid.generateRandomP1Grid);
-    if (!generateP2GridButton)
-        return;
     generateP2GridButton.addEventListener('click', Grid.generateRandomP2Grid);
-    if (!exportButton)
-        return;
-    exportButton.addEventListener('click', function () { return FileIO.exportGrid(fullGrid, C.SAVE_FILE_VERSION, C.FILE_EXTENSION); });
-    if (!continueButton)
-        return;
+    exportButton.addEventListener('click', exportGridHandler);
     continueButton.addEventListener('click', continueGame);
-    if (!newGameButton)
-        return;
     newGameButton.addEventListener('click', newGame);
-    if (!importP1GridButton)
-        return;
-    importP1GridButton.addEventListener('change', function (event) { return FileIO.importFile(event, 0, fullGrid); });
-    if (!clearButton)
-        return;
+    importP1GridButton.addEventListener('change', importP1GridHandler);
     clearButton.addEventListener('click', Grid.clearGrid);
-    if (!importP2GridButton)
-        return;
-    importP2GridButton.addEventListener('change', function (event) { return FileIO.importFile(event, 1, fullGrid); });
-    if (!playButton)
-        return;
+    importP2GridButton.addEventListener('change', importP2GridHandler);
     playButton.addEventListener('click', startRound);
-    if (!dialogOkButton)
-        return;
-    dialogOkButton.addEventListener('click', function () { return Renderer.setDisplay(warningDialog, 'none'); });
-    if (!mirrorP1GridButton)
-        return;
+    dialogOkButton.addEventListener('click', dialogOkHandler);
     mirrorP1GridButton.addEventListener('click', Grid.mirrorP1Grid);
 }
-function unregisterEventListeners() {
+function unregisterMainMenuEventListeners() {
     if (!canvas)
         return;
     if (Placement.canvasMouseDownHandler) {
@@ -938,6 +956,33 @@ function unregisterEventListeners() {
     }
     canvas.removeEventListener('mouseup', Placement.endDrag);
     canvas.removeEventListener('mouseleave', Placement.endDrag);
+    if (generateP1GridButton) {
+        generateP1GridButton.removeEventListener('click', Grid.generateRandomP1Grid);
+    }
+    if (generateP2GridButton) {
+        generateP2GridButton.removeEventListener('click', Grid.generateRandomP2Grid);
+    }
+    if (exportButton) {
+        exportButton.removeEventListener('click', exportGridHandler);
+    }
+    if (importP1GridButton) {
+        importP1GridButton.removeEventListener('change', importP1GridHandler);
+    }
+    if (clearButton) {
+        clearButton.removeEventListener('click', Grid.clearGrid);
+    }
+    if (importP2GridButton) {
+        importP2GridButton.removeEventListener('change', importP2GridHandler);
+    }
+    if (playButton) {
+        playButton.removeEventListener('click', startRound);
+    }
+    if (dialogOkButton) {
+        dialogOkButton.removeEventListener('click', dialogOkHandler);
+    }
+    if (mirrorP1GridButton) {
+        mirrorP1GridButton.removeEventListener('click', Grid.mirrorP1Grid);
+    }
 }
 Renderer.setDisplay(noJs, 'none');
 Renderer.setDisplay(loading, 'flex');
