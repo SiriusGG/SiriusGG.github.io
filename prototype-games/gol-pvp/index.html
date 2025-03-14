@@ -4,56 +4,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Conway's Game of Life, but it is a 2 player PVP online esports game.">
+  <meta name="description" content="Conway's Game of Life, but it is a 2 player PVP esports game.">
   <meta name="keywords" content="conway, conway's, conways, game of life, game of life pvp, game, of, life, pvp, siri, siri's, siris, sirius, gg, sirius gg, siriusgg, sirius gg's, esport, esports">
   <meta name="author" content="Sirius GG">
   <title>Sirius GG's Conway's Game of Life PVP</title>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./style.css">
-  <link rel="canonical" href="https://siriusgg.com/games/game-of-life-pvp">
+  <link rel="icon" href="./hut_t_196.png">
+  <link rel="shortcut icon" type="image/png" sizes="196x196" href="./hut_t_196.png">
+  <link rel="apple-touch-icon" href="./hut_t_196.png">
+  <link rel="canonical" href="https://siriusgg.com/games/game-of-life-pvp"> <!-- ToDo: Change for final release -->
   <script src="./game.js" defer></script>
   <meta property="og:title" content="Sirius GG's Conway's Game of Life PVP">
-  <meta property="og:description" content="Conway's Game of Life, but it is a 2 player PVP online esports game.">
+  <meta property="og:description" content="Conway's Game of Life, but it is a 2 player PVP esports game.">
   <meta property="og:image" content="https://siriusgg.com/games/game-of-life-pvp/graphics/og.jpg">
   <meta property="og:url" content="https://siriusgg.com/games/game-of-life-pvp">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Sirius GG's Conway's Game of Life PVP">
-  <meta name="twitter:description" content="Conway's Game of Life, but it is a 2 player PVP online esports game.">
+  <meta name="twitter:description" content="Conway's Game of Life, but it is a 2 player PVP esports game.">
   <meta name="twitter:image" content="https://siriusgg.com/games/game-of-life-pvp/og.jpg">
+  <meta name="robots" content="noindex, nofollow"> <!-- ToDo: Remove in final release -->
 </head>
 
 <body>
   <div id="bg-container"></div>
   <h1 id="h1-title">Sirius GG's Conway's Game of Life PVP</h1>
-  <h2 id="h2-slogan">Conway's Game of Life, but it is a 2 player PVP online esports game.</h2>
+  <h2 id="h2-slogan">Conway's Game of Life, but it is a 2 player PVP esports game.</h2>
   <div id="no-js"><p>This game requires Javascript to run.</p></div>
   <div id="loading"><p>Loading...</p></div>
   <div id="game-container">
     <div id="left-box">
       <div id="play-box">
-        <label id="play-box-label">Play</label>
+        <label id="play-box-label" class="unselectable">Play</label>
       </div>
       <div id="player-box">
-        <label id="player-box-label">Player</label>
+        <label id="player-box-label" class="unselectable">Player</label>
       </div>
       <div id="news-box">
-        <label id="news-box-label">News</label>
+        <label id="news-box-label" class="unselectable">News</label>
       </div>
       <div id="wisdom-box">
-        <label id="wisdom-box-label">Wisdom</label>
+        <label id="wisdom-box-label" class="unselectable">Wisdom</label>
       </div>
       <div id="classes-box">
-        <label id="classes-box-label">Classes</label>
+        <label id="classes-box-label" class="unselectable">Classes</label>
       </div>
       <div id="skills-box">
-        <label id="skills-box-label">Skills</label>
+        <label id="skills-box-label" class="unselectable">Skills</label>
       </div>
       <div id="shop-box">
-        <label id="shop-box-label">Shop</label>
+        <label id="shop-box-label" class="unselectable">Shop</label>
       </div>
       <div id="options-box">
-        <label id="options-box-label">Options</label>
+        <label id="options-box-label" class="unselectable">Options</label>
       </div>
     </div>
     <div id="game-and-subtext">
@@ -61,30 +65,30 @@
       <div id="bottom-box">
         <p id="subtext">Sirius GG's Conway's Game of Life PVP</p>
         <button id="continue-button" type="button">Continue simulation</button>
-        <button id="new-game-button" type="button">New Game</button>
+        <button id="new-game-button" type="button">New game</button>
       </div>
     </div>
     <div id="button-panel-right">
-      <label>P1 grid options</label>
-      <button id="clear-button" type="button">Clear grid</button>
-      <button id="random-p1-grid-button" type="button">Generate random configuration</button>
-      <button id="export-button" type="button">Export configuration</button>
-      <label id="import-p1-button-label" for="import-p1-button" class="looks-like-button">Import configuration</label>
+      <label class="unselectable">P1 grid options</label>
+      <button id="clear-button" type="button" class="unselectable">Clear grid</button>
+      <button id="random-p1-grid-button" type="button" class="unselectable">Generate random configuration</button>
+      <button id="export-button" type="button" class="unselectable">Export configuration</button>
+      <label id="import-p1-button-label" for="import-p1-button" class="looks-like-button unselectable">Import configuration</label>
       <input id="import-p1-button" type="file" accept=".gol" title="Import a P1 configuration">
-      <label>P2 grid options</label>
-      <button id="random-p2-grid-button" type="button">Generate random configuration</button>
-      <label id="import-p2-button-label" for="import-p2-button" class="looks-like-button">Import configuration</label>
+      <label class="unselectable">P2 grid options</label>
+      <button id="random-p2-grid-button" type="button" class="unselectable">Generate random configuration</button>
+      <label id="import-p2-button-label" for="import-p2-button" class="looks-like-button unselectable">Import configuration</label>
       <input id="import-p2-button" type="file" accept=".gol" title="Import a P2 configuration">
-      <button id="mirror-p1-button" type="button">Mirror P1's configuration</button>
+      <button id="mirror-p1-button" type="button" class="unselectable">Mirror P1's configuration</button>
       <canvas id="p2-preview-canvas"></canvas>
-      <label>Menu</label>
-      <button id="play-button" type="button">Start</button>
+      <label class="unselectable">Menu</label>
+      <button id="play-button" type="button" class="unselectable">Start</button>
     </div>
   </div>
   <div id="warning-dialog" class="dialog">
     <div class="dialog-content">
       <p id="dialog-message"></p>
-      <button id="dialog-ok-button" type="button">OK</button>
+      <button id="dialog-ok-button" type="button" class="unselectable">OK</button>
     </div>
   </div>
 </body>
