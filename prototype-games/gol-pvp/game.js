@@ -374,6 +374,16 @@ var Grid;
         }
     }
     Grid.gridCopy = gridCopy;
+    function logGrid(fullGrid) {
+        for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
+            var rowString = '';
+            for (var col = 0; col < C.FULL_GRID_COLS; col++) {
+                rowString += fullGrid[row][col];
+            }
+            console.log(rowString);
+        }
+    }
+    Grid.logGrid = logGrid;
 })(Grid || (Grid = {}));
 var FileIO;
 (function (FileIO) {
@@ -406,6 +416,7 @@ var FileIO;
     }
     FileIO.exportGrid = exportGrid;
     function importGrid(content, mode, fullGrid) {
+        console.log('importGrid starts');
         // ToDo: Validate and use the other information in a meaningful way
         var parts = content.split(';');
         if (parts.length < 4) {
@@ -423,27 +434,39 @@ var FileIO;
             grid.push(rowArray);
         }
         if (mode === 0) {
+            console.log('mode is 0 (P1)');
+            console.log('checking condtions');
             if (grid.length === C.PLACEMENT_GRID_ROWS && grid[0].length === C.PLACEMENT_GRID_COLS) {
+                console.log('conditions passed');
                 for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
                     for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
                         fullGrid[row + 1][col + 1] = grid[row][col];
                     }
                 }
+                console.log('iterated over grid');
             }
         }
         else if (mode === 1) {
+            console.log('mode is 1 (P2)');
+            console.log('translating grid');
             var p2Grid = Grid.translateP1GridToP2Grid(grid);
+            console.log('grid translated');
+            console.log('checking condtions');
             if (p2Grid.length === C.PLACEMENT_GRID_ROWS && p2Grid[0].length === C.PLACEMENT_GRID_COLS) {
+                console.log('conditions passed');
                 for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
                     for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
                         fullGrid[row + 1][C.PLACEMENT_GRID_COLS + col + 2] = p2Grid[row][col];
                     }
                 }
+                console.log('iterated over grid');
             }
         }
+        console.log('importGrid ends');
     }
     FileIO.importGrid = importGrid;
     function importFile(event, mode, fullGrid) {
+        console.log('importFile for P' + (mode + 1) + ' starts');
         if (!event)
             return;
         if (!event.target)
@@ -454,13 +477,20 @@ var FileIO;
         var files = target.files;
         if (!files)
             return;
+        console.log('basic checks passed');
         var _loop_1 = function (i) {
             var reader = new FileReader();
             var file = files[i];
             reader.onload = function (e) {
                 var _a;
+                console.log('reader.onload starts');
                 var content = (_a = e.target) === null || _a === void 0 ? void 0 : _a.result;
+                console.log('content: ' + content);
+                console.log('fullGrid before import:');
+                Grid.logGrid(fullGrid);
                 importGrid(content, mode, fullGrid);
+                console.log('fullGrid after import:');
+                Grid.logGrid(fullGrid);
                 if (mode === 1) {
                     Renderer.drawP2Preview(previewCanvas, pctx, fullGrid);
                 }
