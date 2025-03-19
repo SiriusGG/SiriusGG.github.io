@@ -1,5 +1,5 @@
 body {
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
 }
 
@@ -15,12 +15,18 @@ body {
 #bg-container {
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: 230%;
   background-image: url('graphics/bg.png');
   background-repeat: repeat;
   background-position: -20px -20px;
   filter: blur(2px);
   z-index: -1;
+}
+
+@media (min-width: 1024px) {
+  #bg-container {
+    height: 100%;
+  }
 }
 
 #h1-title {
@@ -57,32 +63,48 @@ body {
 
 #game-container {
   display: none;
-  flex-direction: row;
-  height: 100%;
-  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
   align-items: center;
   gap: 16px;
 }
 
-#game-canvas {
-  border-style: solid;
-  border-color: black;
-  border-width: 4px;
+@media (min-width: 1024px) {
+  #game-container {
+    flex-direction: row;
+    justify-content: center;
+    width: unset;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
 }
 
 #left-box {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Creates 4 columns */
+  grid-template-rows: repeat(4, auto);   /* Creates 2 rows */
   height: auto;
-  width: 20%;
+  width: 98%;
   order: 10;
-  display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+@media (min-width: 1024px) {
+  #left-box {
+    display: flex;
+    width: 20%;
+    margin-top: unset;
+    gap: 16px;
+  }
 }
 
 #left-box > div {
-  height: 64px;
   display: flex;
   align-items: center;
+  height: 48px;
   border-radius: 8px;
   border-width: 4px;
   border-color: black;
@@ -90,20 +112,26 @@ body {
   cursor: pointer;
 }
 
-#play-box-label,
-#player-box-label,
-#news-box-label,
-#wisdom-box-label,
-#classes-box-label,
-#skills-box-label,
-#shop-box-label,
-#options-box-label {
-  font-size: xx-large;
+@media (min-width: 1024px) {
+  #left-box > div {
+    height: 64px;
+    width: unset;
+  }
+}
+
+#left-box > div > label {
+  font-size: large;
   font-weight: bold;
   padding-left: 16px;
   text-transform: uppercase;
   letter-spacing: 3px;
   cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+  #left-box > div > label {
+    font-size: xx-large;
+  }
 }
 
 #play-box {
@@ -119,7 +147,7 @@ body {
 }
 
 #wisdom-box {
-  background: linear-gradient(90deg, rgba(0, 153, 255, 1) 0%, rgba(0, 81, 135, 1) 100%);
+  background: linear-gradient(90deg, rgb(45, 178, 255) 0%, rgb(0, 106, 206) 100%);
 }
 
 #classes-box {
@@ -148,6 +176,9 @@ body {
 
 #game-canvas {
   order: 10;
+  border-style: solid;
+  border-color: black;
+  border-width: 4px;
 }
 
 #p2-preview-canvas {
@@ -157,7 +188,7 @@ body {
 
 #bottom-box {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   order: 20;
   gap: 8px;
   align-items: center;
@@ -166,6 +197,12 @@ body {
   border-style: solid;
   border-radius: 8px;
   border-width: 4px;
+}
+
+@media (min-width: 1024px) {
+  #bottom-box {
+    flex-direction: row;
+  }
 }
 
 #subtext {
@@ -189,9 +226,9 @@ body {
 #button-panel-right {
   order: 30;
   display: flex;
-  width: 20%;
-  height: auto;
   flex-direction: column;
+  width: 80%;
+  height: auto;
   gap: 8px;
   background-color: rgba(255, 255, 255, 0.9);
   padding: 16px;
@@ -199,6 +236,12 @@ body {
   border-style: solid;
   border-color: rgba(0, 0, 0, 1);
   border-width: 4px;
+}
+
+@media (min-width: 1024px) {
+  #button-panel-right {
+    width: 20%;
+  }
 }
 
 #mirror-p1-button,

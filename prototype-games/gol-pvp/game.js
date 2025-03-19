@@ -18,11 +18,18 @@ var Placement;
 (function (Placement) {
     var isDragging = false;
     var dragState = -1;
+    var lastTouchPosition = null;
     Placement.canvasMouseDownHandler = null;
     Placement.canvasMouseMoveHandler = null;
+    Placement.canvasTouchStartHandler = null;
+    Placement.canvasTouchMoveHandler = null;
+    Placement.canvasTouchEndHandler = null;
     function setupHandlers(fullGrid, canvas, ctx, cellSize) {
         Placement.canvasMouseDownHandler = function (event) { return startDrag(event, fullGrid); };
         Placement.canvasMouseMoveHandler = function (event) { return dragHandler(event, fullGrid, canvas, ctx, cellSize); };
+        Placement.canvasTouchStartHandler = function (event) { return startTouchDrag(event, fullGrid); };
+        Placement.canvasTouchMoveHandler = function (event) { return touchDragHandler(event, fullGrid, canvas, ctx, cellSize); };
+        Placement.canvasTouchEndHandler = function () { return endDrag(); };
     }
     Placement.setupHandlers = setupHandlers;
     function startDrag(event, fullGrid) {
@@ -31,9 +38,23 @@ var Placement;
             return;
         isDragging = true;
         dragState = fullGrid[row][col] === 0 ? 2 : 0;
-        toggleCell(row, col);
+        toggleCell(row, col, fullGrid);
     }
     Placement.startDrag = startDrag;
+    function startTouchDrag(event, fullGrid) {
+        event.preventDefault(); // Prevent scrolling while drawing
+        if (event.touches.length !== 1)
+            return;
+        var touch = event.touches[0];
+        var _a = getP1CellFromTouch(touch), row = _a.row, col = _a.col;
+        if (row === -1 || col === -1)
+            return;
+        isDragging = true;
+        dragState = fullGrid[row][col] === 0 ? 2 : 0;
+        lastTouchPosition = { row: row, col: col };
+        toggleCell(row, col, fullGrid);
+    }
+    Placement.startTouchDrag = startTouchDrag;
     function dragHandler(event, fullGrid, canvas, ctx, cellSize) {
         if (!isDragging)
             return;
@@ -50,15 +71,47 @@ var Placement;
         }
     }
     Placement.dragHandler = dragHandler;
+    function touchDragHandler(event, fullGrid, canvas, ctx, cellSize) {
+        event.preventDefault(); // Prevent scrolling while drawing
+        if (!isDragging || event.touches.length !== 1)
+            return;
+        var touch = event.touches[0];
+        var _a = getP1CellFromTouch(touch), row = _a.row, col = _a.col;
+        if (row === -1 || col === -1)
+            return;
+        // Only update if we've moved to a new cell
+        if (lastTouchPosition && (lastTouchPosition.row !== row || lastTouchPosition.col !== col)) {
+            if (dragState === 2 && fullGrid[row][col] === 0) {
+                fullGrid[row][col] = 2;
+                Renderer.drawP1Grid(canvas, ctx, fullGrid, cellSize);
+            }
+            if (dragState === 0 && fullGrid[row][col] === 2) {
+                fullGrid[row][col] = 0;
+                Renderer.drawP1Grid(canvas, ctx, fullGrid, cellSize);
+            }
+            lastTouchPosition = { row: row, col: col };
+        }
+    }
+    Placement.touchDragHandler = touchDragHandler;
     function endDrag() {
         isDragging = false;
         dragState = -1;
+        lastTouchPosition = null;
     }
     Placement.endDrag = endDrag;
     function getP1CellFromEvent(event) {
         var rect = canvas.getBoundingClientRect();
         var x = event.clientX - rect.left;
         var y = event.clientY - rect.top;
+        return calculateP1Cell(x, y);
+    }
+    function getP1CellFromTouch(touch) {
+        var rect = canvas.getBoundingClientRect();
+        var x = touch.clientX - rect.left;
+        var y = touch.clientY - rect.top;
+        return calculateP1Cell(x, y);
+    }
+    function calculateP1Cell(x, y) {
         var col = Math.floor(x / cellSize);
         var row = Math.floor(y / cellSize);
         if (col >= 0 && col < C.PLACEMENT_GRID_COLS && row >= 0 && row < C.PLACEMENT_GRID_ROWS) {
@@ -66,7 +119,7 @@ var Placement;
         }
         return { row: -1, col: -1 };
     }
-    function toggleCell(row, col) {
+    function toggleCell(row, col, fullGrid) {
         fullGrid[row][col] = fullGrid[row][col] === 0 ? 2 : 0;
         Renderer.drawP1Grid(canvas, ctx, fullGrid, cellSize);
     }
@@ -690,6 +743,7 @@ var placementGridHeight = (C.PLACEMENT_GRID_ROWS * cellSize) + 1;
 var sleepTime = C.INITIAL_SLEEP_TIME;
 var endlessRun = true;
 var gameHasEndedManually = false;
+var optionContinueDragWhenMouseLeavesCanvas = true;
 function showGame() {
     Renderer.drawP1Grid(canvas, ctx, fullGrid, cellSize);
     Renderer.drawP2Preview(previewCanvas, pctx, fullGrid);
@@ -932,7 +986,17 @@ function setupEventListeners() {
     // @ts-ignore
     canvas.addEventListener('mousemove', Placement.canvasMouseMoveHandler);
     canvas.addEventListener('mouseup', Placement.endDrag);
-    canvas.addEventListener('mouseleave', Placement.endDrag);
+    if (!optionContinueDragWhenMouseLeavesCanvas) {
+        canvas.addEventListener('mouseleave', Placement.endDrag);
+    }
+    // @ts-ignore
+    canvas.addEventListener('touchstart', Placement.canvasTouchStartHandler);
+    // @ts-ignore
+    canvas.addEventListener('touchmove', Placement.canvasTouchMoveHandler);
+    // @ts-ignore
+    canvas.addEventListener('touchend', Placement.canvasTouchEndHandler);
+    // @ts-ignore
+    canvas.addEventListener('touchcancel', Placement.canvasTouchEndHandler);
     generateP1GridButton.addEventListener('click', Grid.generateRandomP1Grid);
     generateP2GridButton.addEventListener('click', Grid.generateRandomP2Grid);
     exportButton.addEventListener('click', exportGridHandler);
@@ -954,8 +1018,22 @@ function unregisterMainMenuEventListeners() {
     if (Placement.canvasMouseMoveHandler) {
         canvas.removeEventListener('mousemove', Placement.canvasMouseMoveHandler);
     }
-    canvas.removeEventListener('mouseup', Placement.endDrag);
-    canvas.removeEventListener('mouseleave', Placement.endDrag);
+    if (Placement.endDrag) {
+        canvas.removeEventListener('mouseup', Placement.endDrag);
+        canvas.removeEventListener('mouseleave', Placement.endDrag);
+    }
+    if (Placement.canvasTouchStartHandler) {
+        canvas.removeEventListener('touchstart', Placement.canvasTouchStartHandler);
+    }
+    if (Placement.canvasTouchMoveHandler) {
+        canvas.removeEventListener('touchmove', Placement.canvasTouchMoveHandler);
+    }
+    if (Placement.canvasTouchEndHandler) {
+        canvas.removeEventListener('touchend', Placement.canvasTouchEndHandler);
+    }
+    if (Placement.canvasTouchEndHandler) {
+        canvas.removeEventListener('touchcancel', Placement.canvasTouchEndHandler);
+    }
     if (generateP1GridButton) {
         generateP1GridButton.removeEventListener('click', Grid.generateRandomP1Grid);
     }
