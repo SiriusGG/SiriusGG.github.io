@@ -179,6 +179,13 @@ body {
   border-style: solid;
   border-color: black;
   border-width: 4px;
+  margin-top: 16px;
+}
+
+@media (min-width: 1024px) {
+  #game-canvas {
+    margin-top: unset;
+  }
 }
 
 #p2-preview-canvas {
@@ -190,7 +197,7 @@ body {
   display: flex;
   flex-direction: column;
   order: 20;
-  gap: 8px;
+  gap: 16px;
   align-items: center;
   background-color: white;
   padding: 8px;
@@ -202,6 +209,7 @@ body {
 @media (min-width: 1024px) {
   #bottom-box {
     flex-direction: row;
+    gap: 8px;
   }
 }
 
