@@ -866,7 +866,12 @@ function newGame() {
         for (var i = 0; i < C.LOOP_CHECK_GENERATIONS; i++) {
             lastGenGrids[i] = Grid.buildFullGrid();
         }
-        Renderer.setDisplay(leftBox, 'flex');
+        if (C.FRAME_WIDTH < 1024) {
+            Renderer.setDisplay(leftBox, 'grid');
+        }
+        else {
+            Renderer.setDisplay(leftBox, 'flex');
+        }
         Renderer.setDisplay(buttonPanelRight, 'flex');
         cellSize = Math.min(C.FRAME_WIDTH, C.FRAME_HEIGHT) / (C.PLACEMENT_GRID_ROWS + 2);
         if (canvas) {
@@ -981,22 +986,31 @@ function setupEventListeners() {
     // build the canvas handler functions
     Placement.setupHandlers(fullGrid, canvas, ctx, cellSize);
     // add new event listeners
-    // @ts-ignore
-    canvas.addEventListener('mousedown', Placement.canvasMouseDownHandler);
-    // @ts-ignore
-    canvas.addEventListener('mousemove', Placement.canvasMouseMoveHandler);
-    canvas.addEventListener('mouseup', Placement.endDrag);
-    if (!optionContinueDragWhenMouseLeavesCanvas) {
-        canvas.addEventListener('mouseleave', Placement.endDrag);
+    // mouse placement
+    if (Placement.canvasMouseDownHandler) {
+        canvas.addEventListener('mousedown', Placement.canvasMouseDownHandler);
     }
-    // @ts-ignore
-    canvas.addEventListener('touchstart', Placement.canvasTouchStartHandler);
-    // @ts-ignore
-    canvas.addEventListener('touchmove', Placement.canvasTouchMoveHandler);
-    // @ts-ignore
-    canvas.addEventListener('touchend', Placement.canvasTouchEndHandler);
-    // @ts-ignore
-    canvas.addEventListener('touchcancel', Placement.canvasTouchEndHandler);
+    if (Placement.canvasMouseMoveHandler) {
+        canvas.addEventListener('mousemove', Placement.canvasMouseMoveHandler);
+    }
+    if (Placement.endDrag) {
+        canvas.addEventListener('mouseup', Placement.endDrag);
+        if (!optionContinueDragWhenMouseLeavesCanvas) {
+            canvas.addEventListener('mouseleave', Placement.endDrag);
+        }
+    }
+    // touch placement
+    if (Placement.canvasTouchStartHandler) {
+        canvas.addEventListener('touchstart', Placement.canvasTouchStartHandler);
+    }
+    if (Placement.canvasTouchMoveHandler) {
+        canvas.addEventListener('touchmove', Placement.canvasTouchMoveHandler);
+    }
+    if (Placement.canvasTouchEndHandler) {
+        canvas.addEventListener('touchend', Placement.canvasTouchEndHandler);
+        canvas.addEventListener('touchcancel', Placement.canvasTouchEndHandler);
+    }
+    // buttons
     generateP1GridButton.addEventListener('click', Grid.generateRandomP1Grid);
     generateP2GridButton.addEventListener('click', Grid.generateRandomP2Grid);
     exportButton.addEventListener('click', exportGridHandler);
