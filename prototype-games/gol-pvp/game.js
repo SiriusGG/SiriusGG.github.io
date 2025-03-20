@@ -17,6 +17,163 @@ var C;
     C.PREVIEW_CANVAS_SIZE = 200;
     C.DEBUG = false;
 })(C || (C = {}));
+var E;
+(function (E) {
+    var noJs = document.querySelector('#no-js');
+    var loading = document.querySelector('#loading');
+    var gameContainer = document.querySelector('#game-container');
+    var leftBox = document.querySelector('#left-box');
+    var gameAndSubtext = document.querySelector('#game-and-subtext');
+    var canvas = document.querySelector('#game-canvas');
+    var subtext = document.querySelector('#subtext');
+    var buttonPanelRight = document.querySelector('#button-panel-right');
+    var clearButton = document.querySelector('#clear-button');
+    var generateP1GridButton = document.querySelector('#random-p1-grid-button');
+    var exportButton = document.querySelector('#export-button');
+    var importP1GridButton = document.querySelector('#import-p1-button');
+    var generateP2GridButton = document.querySelector('#random-p2-grid-button');
+    var importP2GridButton = document.querySelector('#import-p2-button');
+    var mirrorP1GridButton = document.querySelector('#mirror-p1-button');
+    var playButton = document.querySelector('#play-button');
+    var previewCanvas = document.querySelector('#p2-preview-canvas');
+    var continueButton = document.querySelector('#continue-button');
+    var newGameButton = document.querySelector('#new-game-button');
+    var warningDialog = document.querySelector('#warning-dialog');
+    var dialogMessage = document.querySelector('#dialog-message');
+    var dialogOkButton = document.querySelector('#dialog-ok-button');
+    if (!noJs)
+        throw new Error('Element #no-js not found');
+    if (!loading)
+        throw new Error('Element #loading not found');
+    if (!gameContainer)
+        throw new Error('Element #game-container not found');
+    if (!leftBox)
+        throw new Error('Element #left-box not found');
+    if (!gameAndSubtext)
+        throw new Error('Element #game-and-subtext not found');
+    if (!canvas)
+        throw new Error('Element #game-canvas not found');
+    if (!subtext)
+        throw new Error('Element #subtext not found');
+    if (!buttonPanelRight)
+        throw new Error('Element #button-panel-right not found');
+    if (!clearButton)
+        throw new Error('Element #clear-button not found');
+    if (!generateP1GridButton)
+        throw new Error('Element #random-p1-grid-button not found');
+    if (!exportButton)
+        throw new Error('Element #export-button not found');
+    if (!importP1GridButton)
+        throw new Error('Element #import-p1-button not found');
+    if (!generateP2GridButton)
+        throw new Error('Element #random-p2-grid-button not found');
+    if (!importP2GridButton)
+        throw new Error('Element #import-p2-button not found');
+    if (!mirrorP1GridButton)
+        throw new Error('Element #mirror-p1-button not found');
+    if (!playButton)
+        throw new Error('Element #play-button not found');
+    if (!previewCanvas)
+        throw new Error('Element #p2-preview-canvas not found');
+    if (!continueButton)
+        throw new Error('Element #continue-button not found');
+    if (!newGameButton)
+        throw new Error('Element #new-game-button not found');
+    if (!warningDialog)
+        throw new Error('Element #warning-dialog not found');
+    if (!dialogMessage)
+        throw new Error('Element #dialog-message not found');
+    if (!dialogOkButton)
+        throw new Error('Element #dialog-ok-button not found');
+    function getNoJs() {
+        return noJs;
+    }
+    E.getNoJs = getNoJs;
+    function getLoading() {
+        return loading;
+    }
+    E.getLoading = getLoading;
+    function getGameContainer() {
+        return gameContainer;
+    }
+    E.getGameContainer = getGameContainer;
+    function getLeftBox() {
+        return leftBox;
+    }
+    E.getLeftBox = getLeftBox;
+    function getGameAndSubtext() {
+        return gameAndSubtext;
+    }
+    E.getGameAndSubtext = getGameAndSubtext;
+    function getCanvas() {
+        return canvas;
+    }
+    E.getCanvas = getCanvas;
+    function getSubtext() {
+        return subtext;
+    }
+    E.getSubtext = getSubtext;
+    function getButtonPanelRight() {
+        return buttonPanelRight;
+    }
+    E.getButtonPanelRight = getButtonPanelRight;
+    function getClearButton() {
+        return clearButton;
+    }
+    E.getClearButton = getClearButton;
+    function getGenerateP1GridButton() {
+        return generateP1GridButton;
+    }
+    E.getGenerateP1GridButton = getGenerateP1GridButton;
+    function getExportButton() {
+        return exportButton;
+    }
+    E.getExportButton = getExportButton;
+    function getImportP1GridButton() {
+        return importP1GridButton;
+    }
+    E.getImportP1GridButton = getImportP1GridButton;
+    function getGenerateP2GridButton() {
+        return generateP2GridButton;
+    }
+    E.getGenerateP2GridButton = getGenerateP2GridButton;
+    function getImportP2GridButton() {
+        return importP2GridButton;
+    }
+    E.getImportP2GridButton = getImportP2GridButton;
+    function getMirrorP1GridButton() {
+        return mirrorP1GridButton;
+    }
+    E.getMirrorP1GridButton = getMirrorP1GridButton;
+    function getPlayButton() {
+        return playButton;
+    }
+    E.getPlayButton = getPlayButton;
+    function getPreviewCanvas() {
+        return previewCanvas;
+    }
+    E.getPreviewCanvas = getPreviewCanvas;
+    function getContinueButton() {
+        return continueButton;
+    }
+    E.getContinueButton = getContinueButton;
+    function getNewGameButton() {
+        return newGameButton;
+    }
+    E.getNewGameButton = getNewGameButton;
+    function getWarningDialog() {
+        return warningDialog;
+    }
+    E.getWarningDialog = getWarningDialog;
+    function getDialogMessage() {
+        return dialogMessage;
+    }
+    E.getDialogMessage = getDialogMessage;
+    function getDialogOkButton() {
+        return dialogOkButton;
+    }
+    E.getDialogOkButton = getDialogOkButton;
+})(E || (E = {}));
 var Placement;
 (function (Placement) {
     var isDragging = false;
@@ -27,7 +184,7 @@ var Placement;
     Placement.canvasTouchStartHandler = null;
     Placement.canvasTouchMoveHandler = null;
     Placement.canvasTouchEndHandler = null;
-    function setupHandlers(fullGrid, canvas, ctx) {
+    function setupHandlers(fullGrid) {
         Placement.canvasMouseDownHandler = function (event) { return startDrag(event, fullGrid); };
         Placement.canvasMouseMoveHandler = function (event) { return dragHandler(event, fullGrid, canvas, ctx); };
         Placement.canvasTouchStartHandler = function (event) { return startTouchDrag(event, fullGrid); };
@@ -66,11 +223,11 @@ var Placement;
             return;
         if (dragState === 2 && fullGrid[row][col] === 0) {
             fullGrid[row][col] = 2;
-            Renderer.drawP1Grid(canvas, ctx, fullGrid);
+            Renderer.drawP1Grid(fullGrid);
         }
         if (dragState === 0 && fullGrid[row][col] === 2) {
             fullGrid[row][col] = 0;
-            Renderer.drawP1Grid(canvas, ctx, fullGrid);
+            Renderer.drawP1Grid(fullGrid);
         }
     }
     Placement.dragHandler = dragHandler;
@@ -86,11 +243,11 @@ var Placement;
         if (lastTouchPosition && (lastTouchPosition.row !== row || lastTouchPosition.col !== col)) {
             if (dragState === 2 && fullGrid[row][col] === 0) {
                 fullGrid[row][col] = 2;
-                Renderer.drawP1Grid(canvas, ctx, fullGrid);
+                Renderer.drawP1Grid(fullGrid);
             }
             if (dragState === 0 && fullGrid[row][col] === 2) {
                 fullGrid[row][col] = 0;
-                Renderer.drawP1Grid(canvas, ctx, fullGrid);
+                Renderer.drawP1Grid(fullGrid);
             }
             lastTouchPosition = { row: row, col: col };
         }
@@ -103,13 +260,13 @@ var Placement;
     }
     Placement.endDrag = endDrag;
     function getP1CellFromEvent(event) {
-        var rect = canvas.getBoundingClientRect();
+        var rect = E.getCanvas().getBoundingClientRect();
         var x = event.clientX - rect.left;
         var y = event.clientY - rect.top;
         return calculateP1Cell(x, y);
     }
     function getP1CellFromTouch(touch) {
-        var rect = canvas.getBoundingClientRect();
+        var rect = E.getCanvas().getBoundingClientRect();
         var x = touch.clientX - rect.left;
         var y = touch.clientY - rect.top;
         return calculateP1Cell(x, y);
@@ -124,7 +281,7 @@ var Placement;
     }
     function toggleCell(row, col, fullGrid) {
         fullGrid[row][col] = fullGrid[row][col] === 0 ? 2 : 0;
-        Renderer.drawP1Grid(canvas, ctx, fullGrid);
+        Renderer.drawP1Grid(fullGrid);
     }
 })(Placement || (Placement = {}));
 var Grid;
@@ -180,7 +337,7 @@ var Grid;
                 }
             }
         }
-        Renderer.drawP1Grid(canvas, ctx, fullGrid);
+        Renderer.drawP1Grid(fullGrid);
     }
     Grid.generateRandomP1Grid = generateRandomP1Grid;
     function generateRandomP2Grid() {
@@ -197,7 +354,7 @@ var Grid;
                 }
             }
         }
-        Renderer.drawP2Preview(previewCanvas, pctx, fullGrid);
+        Renderer.drawP2Preview(fullGrid);
     }
     Grid.generateRandomP2Grid = generateRandomP2Grid;
     function clearGrid() {
@@ -206,7 +363,7 @@ var Grid;
                 fullGrid[row][col] = 0;
             }
         }
-        Renderer.drawP1Grid(canvas, ctx, fullGrid);
+        Renderer.drawP1Grid(fullGrid);
     }
     Grid.clearGrid = clearGrid;
     function mirrorP1Grid() {
@@ -223,7 +380,7 @@ var Grid;
                 fullGrid[row + 1][C.PLACEMENT_GRID_COLS + col + 2] = p2Grid[row][col];
             }
         }
-        Renderer.drawP2Preview(previewCanvas, pctx, fullGrid);
+        Renderer.drawP2Preview(fullGrid);
     }
     Grid.mirrorP1Grid = mirrorP1Grid;
     function getP1IsAlive() {
@@ -551,11 +708,11 @@ var FileIO;
                 if (C.DEBUG) {
                     Grid.logGrid(fullGrid);
                 }
-                if (mode === 1) {
-                    Renderer.drawP2Preview(previewCanvas, pctx, fullGrid);
+                if (mode === 0) {
+                    Renderer.drawP1Grid(fullGrid);
                 }
                 else {
-                    Renderer.drawP1Grid(canvas, ctx, fullGrid);
+                    Renderer.drawP2Preview(fullGrid);
                 }
             };
             reader.onerror = function (e) {
@@ -576,6 +733,12 @@ var FileIO;
 })(FileIO || (FileIO = {}));
 var Renderer;
 (function (Renderer) {
+    var canvas = E.getCanvas();
+    var previewCanvas = E.getPreviewCanvas();
+    var ctx = canvas.getContext('2d');
+    var pctx = previewCanvas.getContext('2d');
+    var warningDialog = E.getWarningDialog();
+    var dialogMessage = E.getDialogMessage();
     var speed = 1;
     function calcFullGridCellSize() {
         if (C.FRAME_WIDTH >= C.DESKTOP_BREAKPOINT) {
@@ -603,22 +766,14 @@ var Renderer;
         element.style.display = displayValue;
     }
     Renderer.setDisplay = setDisplay;
-    function initializeCanvasForPlacement(canvas, previewCanvas) {
-        if (!canvas)
-            return;
+    function initializeCanvasForPlacement() {
         canvas.width = placementGridWidth;
         canvas.height = placementGridHeight;
-        if (!previewCanvas)
-            return;
         previewCanvas.width = C.PREVIEW_CANVAS_SIZE;
         previewCanvas.height = C.PREVIEW_CANVAS_SIZE;
     }
     Renderer.initializeCanvasForPlacement = initializeCanvasForPlacement;
-    function drawP1Grid(canvas, ctx, fullGrid) {
-        if (!canvas)
-            return;
-        if (!ctx)
-            return;
+    function drawP1Grid(fullGrid) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -644,11 +799,7 @@ var Renderer;
         }
     }
     Renderer.drawP1Grid = drawP1Grid;
-    function drawP2Preview(previewCanvas, pctx, fullGrid) {
-        if (!previewCanvas)
-            return;
-        if (!pctx)
-            return;
+    function drawP2Preview(fullGrid) {
         pctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         pctx.fillStyle = '#FFFFFF';
         pctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
@@ -668,11 +819,7 @@ var Renderer;
         }
     }
     Renderer.drawP2Preview = drawP2Preview;
-    function drawFullGrid(canvas, ctx, fullGrid) {
-        if (!canvas)
-            return;
-        if (!ctx)
-            return;
+    function drawFullGrid(fullGrid) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -698,10 +845,8 @@ var Renderer;
         }
     }
     Renderer.drawFullGrid = drawFullGrid;
-    function showWarningDialog(warningDialog, dialogMessage, message) {
-        if (!warningDialog || !dialogMessage)
-            return;
-        dialogMessage.textContent = message;
+    function showWarningDialog(message) {
+        dialogMessage.innerHTML = message;
         warningDialog.style.display = 'flex';
     }
     Renderer.showWarningDialog = showWarningDialog;
@@ -729,6 +874,10 @@ var Renderer;
         }
     }
     Renderer.updateSpeed = updateSpeed;
+    function dialogOkHandler() {
+        setDisplay(warningDialog, 'none');
+    }
+    Renderer.dialogOkHandler = dialogOkHandler;
     function debugLog(message) {
         if (C.DEBUG) {
             console.log(message);
@@ -742,31 +891,6 @@ var Renderer;
 /// <reference path="./constants.ts" />
 // Sirius GG's "Conway's Game of Life" PVP
 // A 2-player Game of Life Esports implementation
-var noJs = document.querySelector('#no-js');
-var loading = document.querySelector('#loading');
-var gameContainer = document.querySelector('#game-container');
-var leftBox = document.querySelector('#left-box');
-var wisdomBoxContent = document.querySelector('#wisdom-box-content');
-var gameAndSubtext = document.querySelector('#game-and-subtext');
-var canvas = document.querySelector('#game-canvas');
-var ctx = canvas.getContext('2d');
-var subtext = document.querySelector('#subtext');
-var buttonPanelRight = document.querySelector('#button-panel-right');
-var clearButton = document.querySelector('#clear-button');
-var generateP1GridButton = document.querySelector('#random-p1-grid-button');
-var exportButton = document.querySelector('#export-button');
-var importP1GridButton = document.querySelector('#import-p1-button');
-var generateP2GridButton = document.querySelector('#random-p2-grid-button');
-var importP2GridButton = document.querySelector('#import-p2-button');
-var mirrorP1GridButton = document.querySelector('#mirror-p1-button');
-var playButton = document.querySelector('#play-button');
-var previewCanvas = document.querySelector('#p2-preview-canvas');
-var pctx = previewCanvas.getContext('2d');
-var continueButton = document.querySelector('#continue-button');
-var newGameButton = document.querySelector('#new-game-button');
-var warningDialog = document.querySelector('#warning-dialog');
-var dialogMessage = document.querySelector('#dialog-message');
-var dialogOkButton = document.querySelector('#dialog-ok-button');
 var fullGrid = Grid.buildFullGrid();
 var initialGrid = Grid.buildFullGrid();
 var lastGenGrids = Grid.buildFullGrids(C.LOOP_CHECK_GENERATIONS);
@@ -777,14 +901,23 @@ var sleepTime = C.INITIAL_SLEEP_TIME;
 var endlessRun = true;
 var gameHasEndedManually = false;
 var optionContinueDragWhenMouseLeavesCanvas = true;
+var canvas = E.getCanvas();
+var previewCanvas = E.getPreviewCanvas();
+var ctx = canvas.getContext('2d');
+var pctx = previewCanvas.getContext('2d');
+var subtext = E.getSubtext();
+var leftBox = E.getLeftBox();
+var buttonPanelRight = E.getButtonPanelRight();
+var warningDialog = E.getWarningDialog();
+var dialogMessage = E.getDialogMessage();
+var continueButton = E.getContinueButton();
+var newGameButton = E.getNewGameButton();
 function sleepWithRedraw(milliseconds, callback, generation) {
-    if (!subtext)
-        return;
     var start = Date.now();
     function checkTime() {
         var current = Date.now();
         if (current - start < milliseconds) {
-            Renderer.drawFullGrid(canvas, ctx, fullGrid);
+            Renderer.drawFullGrid(fullGrid);
             if (generation != undefined) {
                 subtext.innerHTML = 'Generation ' + generation + '/' + C.MAX_GENERATIONS + ' (speed: ' + Renderer.getSpeed() + 'x)';
             }
@@ -797,8 +930,6 @@ function sleepWithRedraw(milliseconds, callback, generation) {
     checkTime();
 }
 function showResultInSubtext(generations) {
-    if (!subtext)
-        return;
     var p1IsAlive = Grid.getP1IsAlive();
     var p2IsAlive = Grid.getP2IsAlive();
     var p1AliveAmount = Grid.countAliveP1();
@@ -866,7 +997,7 @@ function _continueGame() {
     sleepWithRedraw(sleepTime, function () {
         if (!gameHasEndedManually) {
             Grid.advanceGeneration(fullGrid, nextGenGrid);
-            Renderer.drawFullGrid(canvas, ctx, fullGrid);
+            Renderer.drawFullGrid(fullGrid);
         }
         if (endlessRun && !gameHasEndedManually) {
             _continueGame();
@@ -875,15 +1006,15 @@ function _continueGame() {
 }
 function continueGame() {
     endlessRun = true;
-    Renderer.setDisplay(continueButton, 'none');
+    Renderer.setDisplay(E.getContinueButton(), 'none');
     _continueGame();
 }
 function newGamePlacement() {
     gameHasEndedManually = true;
     endlessRun = false;
     setTimeout(function () {
-        Renderer.setDisplay(continueButton, 'none');
-        Renderer.setDisplay(newGameButton, 'none');
+        Renderer.setDisplay(E.getContinueButton(), 'none');
+        Renderer.setDisplay(E.getNewGameButton(), 'none');
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
                 fullGrid[row][col] = initialGrid[row][col];
@@ -900,30 +1031,24 @@ function newGamePlacement() {
             Renderer.setDisplay(leftBox, 'flex');
         }
         Renderer.setDisplay(buttonPanelRight, 'flex');
-        if (canvas) {
-            canvas.width = placementGridWidth;
-            canvas.height = placementGridHeight;
-            if (ctx) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        }
+        canvas.width = placementGridWidth;
+        canvas.height = placementGridHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         Renderer.setSpeed(1);
         sleepTime = C.INITIAL_SLEEP_TIME;
-        if (subtext) {
-            subtext.innerHTML = "Sirius GG's Conway's Game of Life PVP";
-        }
-        Renderer.drawP1Grid(canvas, ctx, fullGrid);
-        Renderer.drawP2Preview(previewCanvas, pctx, fullGrid);
+        subtext.innerHTML = "Sirius GG's Conway's Game of Life PVP";
+        Renderer.drawP1Grid(fullGrid);
+        Renderer.drawP2Preview(fullGrid);
         setupEventListeners();
     }, sleepTime * 1.1);
 }
 function startRound() {
     if (!Grid.getP1IsAlive()) {
-        Renderer.showWarningDialog(warningDialog, dialogMessage, "P1 has an empty grid. Cannot start.");
+        Renderer.showWarningDialog("P1 has an empty grid. Cannot start.");
         return;
     }
     if (!Grid.getP2IsAlive()) {
-        Renderer.showWarningDialog(warningDialog, dialogMessage, "P2 has an empty grid. Cannot start.");
+        Renderer.showWarningDialog("P2 has an empty grid. Cannot start.");
         return;
     }
     unregisterMainMenuEventListeners();
@@ -934,11 +1059,9 @@ function startRound() {
     var fullGridCellSize = Renderer.calcFullGridCellSize();
     var fullGridWidth = (C.FULL_GRID_COLS * fullGridCellSize) + 1;
     var fullGridHeight = (C.FULL_GRID_ROWS * fullGridCellSize) + 1;
-    if (!canvas)
-        return;
     canvas.width = fullGridWidth;
     canvas.height = fullGridHeight;
-    Renderer.drawFullGrid(canvas, ctx, fullGrid);
+    Renderer.drawFullGrid(fullGrid);
     window.scrollTo(0, 0);
     var generations = 0;
     function advanceAndCheck() {
@@ -947,7 +1070,7 @@ function startRound() {
             sleepTime = C.INITIAL_SLEEP_TIME / Renderer.getSpeed();
             sleepWithRedraw(sleepTime, function () {
                 Grid.advanceGeneration(fullGrid, nextGenGrid);
-                Renderer.drawFullGrid(canvas, ctx, fullGrid);
+                Renderer.drawFullGrid(fullGrid);
                 generations++;
                 if (Grid.gameHasEnded() || generations >= C.MAX_GENERATIONS) {
                     showResultInSubtext(generations);
@@ -977,81 +1100,24 @@ function importP1GridHandler(event) {
 function importP2GridHandler(event) {
     FileIO.importFile(event, 1, fullGrid);
 }
-function dialogOkHandler() {
-    Renderer.setDisplay(warningDialog, 'none');
-}
 function setupEventListeners() {
-    // validate all buttons and fields exist
-    if (!canvas)
-        return;
-    if (!continueButton)
-        return;
-    if (!newGameButton)
-        return;
-    if (!generateP1GridButton)
-        return;
-    if (!generateP2GridButton)
-        return;
-    if (!exportButton)
-        return;
-    if (!importP1GridButton)
-        return;
-    if (!clearButton)
-        return;
-    if (!importP2GridButton)
-        return;
-    if (!playButton)
-        return;
-    if (!dialogOkButton)
-        return;
-    if (!mirrorP1GridButton)
-        return;
-    debugLog('all fields exist');
     // build the canvas handler functions
-    Placement.setupHandlers(fullGrid, canvas, ctx);
-    // validate functions from other namespaces exit
+    Placement.setupHandlers(fullGrid);
+    // validate functions from other namespaces exist
     if (!Placement.canvasMouseDownHandler)
         return;
-    debugLog('canvasMouseDownHandler function exists');
     if (!Placement.canvasMouseMoveHandler)
         return;
-    debugLog('canvasMouseMoveHandler function exists');
-    if (!Placement.endDrag)
-        return;
-    debugLog('endDrag function exists');
     if (!Placement.canvasTouchStartHandler)
         return;
-    debugLog('canvasTouchStartHandler function exists');
     if (!Placement.canvasTouchMoveHandler)
         return;
-    debugLog('canvasTouchMoveHandler function exists');
     if (!Placement.canvasTouchEndHandler)
         return;
-    debugLog('canvasTouchEndHandler function exists');
-    debugLog('placement functions exist');
-    if (typeof Grid === 'undefined') {
-        debugLog('Grid namespace does not exist');
-        return;
-    }
-    if (typeof Grid.generateRandomP1Grid !== 'function') {
-        debugLog('generateRandomP1Grid function does not exist');
-        return;
-    }
-    debugLog('generateRandomP1Grid function exists');
-    if (!Grid.generateRandomP2Grid)
-        return;
-    debugLog('generateRandomP2Grid function exists');
-    if (!Grid.clearGrid)
-        return;
-    debugLog('clearGrid function exists');
-    if (!Grid.mirrorP1Grid)
-        return;
-    debugLog('mirrorP1Grid function exists');
-    debugLog('all functions exist');
     // unregister all existing event listeners
     unregisterMainMenuEventListeners();
-    continueButton.removeEventListener('click', continueGame);
-    newGameButton.removeEventListener('click', newGamePlacement);
+    E.getContinueButton().removeEventListener('click', continueGame);
+    E.getNewGameButton().removeEventListener('click', newGamePlacement);
     // add new event listeners
     // mouse placement
     canvas.addEventListener('mousedown', Placement.canvasMouseDownHandler);
@@ -1066,46 +1132,23 @@ function setupEventListeners() {
     canvas.addEventListener('touchend', Placement.canvasTouchEndHandler);
     canvas.addEventListener('touchcancel', Placement.canvasTouchEndHandler);
     // buttons
-    generateP1GridButton.addEventListener('click', Grid.generateRandomP1Grid);
-    generateP2GridButton.addEventListener('click', Grid.generateRandomP2Grid);
-    exportButton.addEventListener('click', exportGridHandler);
-    continueButton.addEventListener('click', continueGame);
-    newGameButton.addEventListener('click', newGamePlacement);
-    importP1GridButton.addEventListener('change', importP1GridHandler);
-    clearButton.addEventListener('click', Grid.clearGrid);
-    importP2GridButton.addEventListener('change', importP2GridHandler);
-    playButton.addEventListener('click', startRound);
-    dialogOkButton.addEventListener('click', dialogOkHandler);
-    mirrorP1GridButton.addEventListener('click', Grid.mirrorP1Grid);
+    E.getGenerateP1GridButton().addEventListener('click', Grid.generateRandomP1Grid);
+    E.getGenerateP2GridButton().addEventListener('click', Grid.generateRandomP2Grid);
+    E.getExportButton().addEventListener('click', exportGridHandler);
+    E.getContinueButton().addEventListener('click', continueGame);
+    E.getNewGameButton().addEventListener('click', newGamePlacement);
+    E.getImportP1GridButton().addEventListener('change', importP1GridHandler);
+    E.getClearButton().addEventListener('click', Grid.clearGrid);
+    E.getImportP2GridButton().addEventListener('change', importP2GridHandler);
+    E.getPlayButton().addEventListener('click', startRound);
+    E.getDialogOkButton().addEventListener('click', Renderer.dialogOkHandler);
+    E.getMirrorP1GridButton().addEventListener('click', Grid.mirrorP1Grid);
 }
 function unregisterMainMenuEventListeners() {
-    // validate all buttons and fields exist
-    if (!canvas)
-        return;
-    if (!generateP1GridButton)
-        return;
-    if (!generateP2GridButton)
-        return;
-    if (!exportButton)
-        return;
-    if (!importP1GridButton)
-        return;
-    if (!clearButton)
-        return;
-    if (!importP2GridButton)
-        return;
-    if (!playButton)
-        return;
-    if (!dialogOkButton)
-        return;
-    if (!mirrorP1GridButton)
-        return;
-    // validate functions from other namespaces exit
+    // validate functions from other namespaces exist
     if (!Placement.canvasMouseDownHandler)
         return;
     if (!Placement.canvasMouseMoveHandler)
-        return;
-    if (!Placement.endDrag)
         return;
     if (!Placement.canvasTouchStartHandler)
         return;
@@ -1115,14 +1158,6 @@ function unregisterMainMenuEventListeners() {
         return;
     if (!Placement.canvasTouchEndHandler)
         return;
-    if (!Grid.generateRandomP1Grid)
-        return;
-    if (!Grid.generateRandomP2Grid)
-        return;
-    if (!Grid.clearGrid)
-        return;
-    if (!Grid.mirrorP1Grid)
-        return;
     canvas.removeEventListener('mousedown', Placement.canvasMouseDownHandler);
     canvas.removeEventListener('mousemove', Placement.canvasMouseMoveHandler);
     canvas.removeEventListener('mouseup', Placement.endDrag);
@@ -1131,26 +1166,26 @@ function unregisterMainMenuEventListeners() {
     canvas.removeEventListener('touchmove', Placement.canvasTouchMoveHandler);
     canvas.removeEventListener('touchend', Placement.canvasTouchEndHandler);
     canvas.removeEventListener('touchcancel', Placement.canvasTouchEndHandler);
-    generateP1GridButton.removeEventListener('click', Grid.generateRandomP1Grid);
-    generateP2GridButton.removeEventListener('click', Grid.generateRandomP2Grid);
-    exportButton.removeEventListener('click', exportGridHandler);
-    importP1GridButton.removeEventListener('change', importP1GridHandler);
-    clearButton.removeEventListener('click', Grid.clearGrid);
-    importP2GridButton.removeEventListener('change', importP2GridHandler);
-    playButton.removeEventListener('click', startRound);
-    dialogOkButton.removeEventListener('click', dialogOkHandler);
-    mirrorP1GridButton.removeEventListener('click', Grid.mirrorP1Grid);
+    E.getGenerateP1GridButton().removeEventListener('click', Grid.generateRandomP1Grid);
+    E.getGenerateP2GridButton().removeEventListener('click', Grid.generateRandomP2Grid);
+    E.getExportButton().removeEventListener('click', exportGridHandler);
+    E.getImportP1GridButton().removeEventListener('change', importP1GridHandler);
+    E.getClearButton().removeEventListener('click', Grid.clearGrid);
+    E.getImportP2GridButton().removeEventListener('change', importP2GridHandler);
+    E.getPlayButton().removeEventListener('click', startRound);
+    E.getDialogOkButton().removeEventListener('click', Renderer.dialogOkHandler);
+    E.getMirrorP1GridButton().removeEventListener('click', Grid.mirrorP1Grid);
 }
 function debugLog(message) {
     if (C.DEBUG) {
         console.log(message);
     }
 }
-Renderer.setDisplay(noJs, 'none');
-Renderer.setDisplay(loading, 'flex');
-Renderer.initializeCanvasForPlacement(canvas, previewCanvas);
-Renderer.drawP1Grid(canvas, ctx, fullGrid);
-Renderer.drawP2Preview(previewCanvas, pctx, fullGrid);
+Renderer.setDisplay(E.getNoJs(), 'none');
+Renderer.setDisplay(E.getLoading(), 'flex');
+Renderer.initializeCanvasForPlacement();
+Renderer.drawP1Grid(fullGrid);
+Renderer.drawP2Preview(fullGrid);
 setupEventListeners();
-Renderer.setDisplay(loading, 'none');
-Renderer.setDisplay(gameContainer, 'flex');
+Renderer.setDisplay(E.getLoading(), 'none');
+Renderer.setDisplay(E.getGameContainer(), 'flex');
