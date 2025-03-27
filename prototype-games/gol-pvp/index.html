@@ -9,7 +9,7 @@
   <meta name="author" content="Sirius GG">
   <title>Sirius GG's Conway's Game of Life PVP</title>
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./css/_style.css">
   <link rel="icon" href="./hut_t_196.png">
   <link rel="shortcut icon" type="image/png" sizes="196x196" href="./hut_t_196.png">
   <link rel="apple-touch-icon" href="./hut_t_196.png">
@@ -35,29 +35,37 @@
   <div id="loading"><p>Loading...</p></div>
   <div id="game-container">
     <div id="left-box">
-      <div id="play-box">
-        <label id="play-box-label" class="unselectable">Play</label>
-      </div>
       <div id="player-box">
         <label id="player-box-label" class="unselectable">Player</label>
+        <canvas id="player-tile-preview"></canvas>
+      </div>
+      <div id="training-box">
+        <label id="training-box-label" class="unselectable">Training</label>
+        <img class="left-box-button-icon" src="./graphics/icons/pencil-icon.png" alt="Training">
       </div>
       <div id="news-box">
         <label id="news-box-label" class="unselectable">News</label>
+        <img class="left-box-button-icon" src="./graphics/icons/info-icon.png" alt="News">
       </div>
       <div id="wisdom-box">
         <label id="wisdom-box-label" class="unselectable">Wisdom</label>
+        <img class="left-box-button-icon" src="./graphics/icons/graduation-cap-icon.png" alt="Wisdom">
       </div>
       <div id="classes-box">
         <label id="classes-box-label" class="unselectable">Classes</label>
+        <img class="left-box-button-icon" src="./graphics/icons/crossed-swords-icon.png" alt="Classes">
       </div>
       <div id="skills-box">
         <label id="skills-box-label" class="unselectable">Skills</label>
+        <img class="left-box-button-icon" src="./graphics/icons/taxonomy-icon.png" alt="Skills">
       </div>
       <div id="shop-box">
         <label id="shop-box-label" class="unselectable">Shop</label>
+        <img class="left-box-button-icon" src="./graphics/icons/cart-line-icon.png" alt="Shop">
       </div>
       <div id="options-box">
-        <label id="options-box-label" class="unselectable">Options</label>
+        <label id="options-box-label" class="unselectable">Settings</label>
+        <img class="left-box-button-icon" src="./graphics/icons/setting-black-icon.png" alt="Settings">
       </div>
     </div>
     <div id="game-and-subtext">

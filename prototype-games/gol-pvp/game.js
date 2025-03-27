@@ -5,7 +5,7 @@ var C;
     C.DESKTOP_BREAKPOINT = 1024;
     C.PLACEMENT_GRID_COLS = 15;
     C.PLACEMENT_GRID_ROWS = 15;
-    C.PLACEMENT_GRID_CELL_SIZE = Math.min(C.FRAME_WIDTH, C.FRAME_HEIGHT) / (C.PLACEMENT_GRID_ROWS + 2);
+    C.PLACEMENT_GRID_CELL_SIZE = Math.min(C.FRAME_WIDTH, C.FRAME_HEIGHT) / (C.PLACEMENT_GRID_ROWS + 2); // ToDo: Should probably make this let instead of const and move out of this file for client resizing update
     C.FULL_GRID_COLS = (2 * C.PLACEMENT_GRID_COLS) + 3;
     C.FULL_GRID_ROWS = C.PLACEMENT_GRID_ROWS + 2;
     C.MAX_GENERATIONS = 2500;
@@ -17,8 +17,18 @@ var C;
     C.PREVIEW_CANVAS_SIZE = 200;
     C.DEBUG = false;
 })(C || (C = {}));
+var D;
+(function (D) {
+    function debugLog(message) {
+        if (C.DEBUG) {
+            console.log(message);
+        }
+    }
+    D.debugLog = debugLog;
+})(D || (D = {}));
 var E;
 (function (E) {
+    var body = document.body;
     var noJs = document.querySelector('#no-js');
     var loading = document.querySelector('#loading');
     var gameContainer = document.querySelector('#game-container');
@@ -41,6 +51,8 @@ var E;
     var warningDialog = document.querySelector('#warning-dialog');
     var dialogMessage = document.querySelector('#dialog-message');
     var dialogOkButton = document.querySelector('#dialog-ok-button');
+    if (!body)
+        throw new Error('body not found');
     if (!noJs)
         throw new Error('Element #no-js not found');
     if (!loading)
@@ -85,6 +97,10 @@ var E;
         throw new Error('Element #dialog-message not found');
     if (!dialogOkButton)
         throw new Error('Element #dialog-ok-button not found');
+    function getBody() {
+        return body;
+    }
+    E.getBody = getBody;
     function getNoJs() {
         return noJs;
     }
@@ -174,118 +190,139 @@ var E;
     }
     E.getDialogOkButton = getDialogOkButton;
 })(E || (E = {}));
-var Placement;
-(function (Placement) {
-    var isDragging = false;
-    var dragState = -1;
-    var lastTouchPosition = null;
-    Placement.canvasMouseDownHandler = null;
-    Placement.canvasMouseMoveHandler = null;
-    Placement.canvasTouchStartHandler = null;
-    Placement.canvasTouchMoveHandler = null;
-    Placement.canvasTouchEndHandler = null;
-    function setupHandlers(fullGrid) {
-        Placement.canvasMouseDownHandler = function (event) { return startDrag(event, fullGrid); };
-        Placement.canvasMouseMoveHandler = function (event) { return dragHandler(event, fullGrid, canvas, ctx); };
-        Placement.canvasTouchStartHandler = function (event) { return startTouchDrag(event, fullGrid); };
-        Placement.canvasTouchMoveHandler = function (event) { return touchDragHandler(event, fullGrid, canvas, ctx); };
-        Placement.canvasTouchEndHandler = function () { return endDrag(); };
+var FileIO;
+(function (FileIO) {
+    function download(filename, text) {
+        var pom = document.createElement('a');
+        pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        pom.setAttribute('download', filename);
+        var event = new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        });
+        pom.dispatchEvent(event);
     }
-    Placement.setupHandlers = setupHandlers;
-    function startDrag(event, fullGrid) {
-        var _a = getP1CellFromEvent(event), row = _a.row, col = _a.col;
-        if (row === -1 || col === -1)
-            return;
-        isDragging = true;
-        dragState = fullGrid[row][col] === 0 ? 2 : 0;
-        toggleCell(row, col, fullGrid);
+    FileIO.download = download;
+    function downloadConfiguration(fullGrid) {
+        var configurationString = Grid.exportP1Grid(fullGrid);
+        download('grid' + C.FILE_EXTENSION, configurationString); // ToDo: Derive file name from configuration name
     }
-    Placement.startDrag = startDrag;
-    function startTouchDrag(event, fullGrid) {
-        event.preventDefault(); // Prevent scrolling while drawing
-        if (event.touches.length !== 1)
-            return;
-        var touch = event.touches[0];
-        var _a = getP1CellFromTouch(touch), row = _a.row, col = _a.col;
-        if (row === -1 || col === -1)
-            return;
-        isDragging = true;
-        dragState = fullGrid[row][col] === 0 ? 2 : 0;
-        lastTouchPosition = { row: row, col: col };
-        toggleCell(row, col, fullGrid);
-    }
-    Placement.startTouchDrag = startTouchDrag;
-    function dragHandler(event, fullGrid, canvas, ctx) {
-        if (!isDragging)
-            return;
-        var _a = getP1CellFromEvent(event), row = _a.row, col = _a.col;
-        if (row === -1 || col === -1)
-            return;
-        if (dragState === 2 && fullGrid[row][col] === 0) {
-            fullGrid[row][col] = 2;
-            Renderer.drawP1Grid(fullGrid);
+    FileIO.downloadConfiguration = downloadConfiguration;
+    function importGrid(content, mode, fullGrid) {
+        D.debugLog('importGrid starts');
+        // ToDo: Validate and use the other information in a meaningful way
+        var parts = content.split(';');
+        if (parts.length < 4) {
+            throw new Error('Invalid input format: missing data section');
         }
-        if (dragState === 0 && fullGrid[row][col] === 2) {
-            fullGrid[row][col] = 0;
-            Renderer.drawP1Grid(fullGrid);
-        }
-    }
-    Placement.dragHandler = dragHandler;
-    function touchDragHandler(event, fullGrid, canvas, ctx) {
-        event.preventDefault(); // Prevent scrolling while drawing
-        if (!isDragging || event.touches.length !== 1)
-            return;
-        var touch = event.touches[0];
-        var _a = getP1CellFromTouch(touch), row = _a.row, col = _a.col;
-        if (row === -1 || col === -1)
-            return;
-        // Only update if we've moved to a new cell
-        if (lastTouchPosition && (lastTouchPosition.row !== row || lastTouchPosition.col !== col)) {
-            if (dragState === 2 && fullGrid[row][col] === 0) {
-                fullGrid[row][col] = 2;
-                Renderer.drawP1Grid(fullGrid);
+        var rows = parts[3].split(',');
+        var grid = [];
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var rowArray = [];
+            for (var j = 0; j < row.length; j++) {
+                var current = parseInt(row[j], 10);
+                rowArray.push(current);
             }
-            if (dragState === 0 && fullGrid[row][col] === 2) {
-                fullGrid[row][col] = 0;
-                Renderer.drawP1Grid(fullGrid);
+            grid.push(rowArray);
+        }
+        if (mode === 0) {
+            D.debugLog('mode is 0 (P1)');
+            D.debugLog('checking condtions');
+            if (grid.length === C.PLACEMENT_GRID_ROWS && grid[0].length === C.PLACEMENT_GRID_COLS) {
+                D.debugLog('conditions passed');
+                for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
+                    for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
+                        fullGrid[row + 1][col + 1] = grid[row][col];
+                    }
+                }
+                D.debugLog('iterated over grid');
             }
-            lastTouchPosition = { row: row, col: col };
+        }
+        else if (mode === 1) {
+            D.debugLog('mode is 1 (P2)');
+            D.debugLog('translating grid');
+            var p2Grid = Grid.translateP1GridToP2Grid(grid);
+            D.debugLog('grid translated');
+            D.debugLog('checking condtions');
+            if (p2Grid.length === C.PLACEMENT_GRID_ROWS && p2Grid[0].length === C.PLACEMENT_GRID_COLS) {
+                D.debugLog('conditions passed');
+                for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
+                    for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
+                        fullGrid[row + 1][C.PLACEMENT_GRID_COLS + col + 2] = p2Grid[row][col];
+                    }
+                }
+                D.debugLog('iterated over grid');
+            }
+        }
+        D.debugLog('importGrid ends');
+    }
+    FileIO.importGrid = importGrid;
+    function importFile(event, mode, fullGrid) {
+        D.debugLog('importFile for P' + (mode + 1) + ' starts');
+        if (!event)
+            return;
+        if (!event.target)
+            return;
+        var target = event.target;
+        if (!target)
+            return;
+        var files = target.files;
+        if (!files)
+            return;
+        D.debugLog('basic checks passed');
+        var _loop_1 = function (i) {
+            var reader = new FileReader();
+            var file = files[i];
+            reader.onload = function (e) {
+                var _a;
+                D.debugLog('reader.onload starts');
+                var content = (_a = e.target) === null || _a === void 0 ? void 0 : _a.result;
+                D.debugLog('content: ' + content);
+                D.debugLog('fullGrid before import:');
+                if (C.DEBUG) {
+                    Grid.logGrid(fullGrid);
+                }
+                importGrid(content, mode, fullGrid);
+                D.debugLog('fullGrid after import:');
+                if (C.DEBUG) {
+                    Grid.logGrid(fullGrid);
+                }
+                if (mode === 0) {
+                    Renderer.drawP1Grid(fullGrid);
+                }
+                else {
+                    Renderer.drawP2Preview(fullGrid);
+                }
+            };
+            reader.onerror = function (e) {
+                console.error("Error reading file: ".concat(file.name), e);
+            };
+            reader.readAsText(file);
+        };
+        for (var i = 0; i < files.length; i++) {
+            _loop_1(i);
         }
     }
-    Placement.touchDragHandler = touchDragHandler;
-    function endDrag() {
-        isDragging = false;
-        dragState = -1;
-        lastTouchPosition = null;
-    }
-    Placement.endDrag = endDrag;
-    function getP1CellFromEvent(event) {
-        var rect = E.getCanvas().getBoundingClientRect();
-        var x = event.clientX - rect.left;
-        var y = event.clientY - rect.top;
-        return calculateP1Cell(x, y);
-    }
-    function getP1CellFromTouch(touch) {
-        var rect = E.getCanvas().getBoundingClientRect();
-        var x = touch.clientX - rect.left;
-        var y = touch.clientY - rect.top;
-        return calculateP1Cell(x, y);
-    }
-    function calculateP1Cell(x, y) {
-        var col = Math.floor(x / C.PLACEMENT_GRID_CELL_SIZE);
-        var row = Math.floor(y / C.PLACEMENT_GRID_CELL_SIZE);
-        if (col >= 0 && col < C.PLACEMENT_GRID_COLS && row >= 0 && row < C.PLACEMENT_GRID_ROWS) {
-            return { row: row + 1, col: col + 1 };
-        }
-        return { row: -1, col: -1 };
-    }
-    function toggleCell(row, col, fullGrid) {
-        fullGrid[row][col] = fullGrid[row][col] === 0 ? 2 : 0;
-        Renderer.drawP1Grid(fullGrid);
-    }
-})(Placement || (Placement = {}));
+    FileIO.importFile = importFile;
+})(FileIO || (FileIO = {}));
 var Grid;
 (function (Grid) {
+    function exportP1Grid(fullGrid) {
+        var configurationName = 'configuration'; // ToDo: Show dialog to user and let him enter a custom configuration name
+        var gridString = 'v:' + C.SAVE_FILE_VERSION + ';' + configurationName + ';cols:' + C.PLACEMENT_GRID_COLS + ',rows:' + C.PLACEMENT_GRID_ROWS + ';';
+        for (var row = 1; row <= C.PLACEMENT_GRID_ROWS; row++) {
+            for (var col = 1; col <= C.PLACEMENT_GRID_COLS; col++) {
+                gridString += '' + fullGrid[row][col];
+            }
+            if (row != C.PLACEMENT_GRID_ROWS) {
+                gridString += ',';
+            }
+        }
+        return gridString;
+    }
+    Grid.exportP1Grid = exportP1Grid;
     function translateP1GridToP2Grid(grid) {
         var p2Grid = [];
         for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
@@ -366,7 +403,7 @@ var Grid;
         Renderer.drawP1Grid(fullGrid);
     }
     Grid.clearGrid = clearGrid;
-    function mirrorP1Grid() {
+    function mirrorP1Grid(fullGrid) {
         var p1Grid = [];
         for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
             p1Grid[row] = [];
@@ -383,7 +420,12 @@ var Grid;
         Renderer.drawP2Preview(fullGrid);
     }
     Grid.mirrorP1Grid = mirrorP1Grid;
-    function getP1IsAlive() {
+    function mirrorP1GridHandler() {
+        // ToDo: Load fullGrid 4 real instead of relying that it is in the namespace (for multiple-game-sessions-simultaneosly-update / server-update)
+        Grid.mirrorP1Grid(fullGrid);
+    }
+    Grid.mirrorP1GridHandler = mirrorP1GridHandler;
+    function getP1IsAlive(fullGrid) {
         var p1Alive = false;
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
@@ -394,7 +436,7 @@ var Grid;
         return p1Alive;
     }
     Grid.getP1IsAlive = getP1IsAlive;
-    function getP2IsAlive() {
+    function getP2IsAlive(fullGrid) {
         var p2Alive = false;
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
@@ -405,10 +447,10 @@ var Grid;
         return p2Alive;
     }
     Grid.getP2IsAlive = getP2IsAlive;
-    function gridEquals(currentGrid, pastGrid) {
+    function gridEquals(grid1, grid2) {
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
-                if (currentGrid[row][col] != pastGrid[row][col])
+                if (grid1[row][col] != grid2[row][col])
                     return false;
             }
         }
@@ -425,7 +467,7 @@ var Grid;
         return true;
     }
     Grid.gridIsEmpty = gridIsEmpty;
-    function countAliveP1() {
+    function countAliveP1(fullGrid) {
         var counter = 0;
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
@@ -437,7 +479,7 @@ var Grid;
         return counter;
     }
     Grid.countAliveP1 = countAliveP1;
-    function countAliveP2() {
+    function countAliveP2(fullGrid) {
         var counter = 0;
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
@@ -449,8 +491,8 @@ var Grid;
         return counter;
     }
     Grid.countAliveP2 = countAliveP2;
-    function gameHasEnded() {
-        if (!Grid.getP1IsAlive() || !Grid.getP2IsAlive()) {
+    function gameHasEnded(fullGrid, lastGenGrids) {
+        if (!Grid.getP1IsAlive(fullGrid) || !Grid.getP2IsAlive(fullGrid)) {
             return true;
         }
         for (var genCount = 0; genCount < C.LOOP_CHECK_GENERATIONS; genCount++) {
@@ -598,155 +640,249 @@ var Grid;
     }
     Grid.logGrid = logGrid;
 })(Grid || (Grid = {}));
-var FileIO;
-(function (FileIO) {
-    function download(filename, text) {
-        var pom = document.createElement('a');
-        pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-        pom.setAttribute('download', filename);
-        if (document.createEvent) {
-            var event_1 = document.createEvent('MouseEvents');
-            event_1.initEvent('click', true, true);
-            pom.dispatchEvent(event_1);
-        }
-        else {
-            pom.click();
-        }
-    }
-    FileIO.download = download;
-    function exportGrid(fullGrid, SAVE_FILE_VERSION, FILE_EXTENSION) {
-        var configurationName = 'configuration'; // ToDo: Show dialog to user and let him enter a custom configuration name
-        var gridString = 'v:' + SAVE_FILE_VERSION + ';' + configurationName + ';cols:' + C.PLACEMENT_GRID_COLS + ',rows:' + C.PLACEMENT_GRID_ROWS + ';';
-        for (var row = 1; row <= C.PLACEMENT_GRID_ROWS; row++) {
-            for (var col = 1; col <= C.PLACEMENT_GRID_COLS; col++) {
-                gridString += '' + fullGrid[row][col];
-            }
-            if (row != C.PLACEMENT_GRID_ROWS) {
-                gridString += ',';
-            }
-        }
-        download('grid' + FILE_EXTENSION, gridString); // ToDo: Derive file name from configuration name
-    }
-    FileIO.exportGrid = exportGrid;
-    function importGrid(content, mode, fullGrid) {
-        debugLog('importGrid starts');
-        // ToDo: Validate and use the other information in a meaningful way
-        var parts = content.split(';');
-        if (parts.length < 4) {
-            throw new Error('Invalid input format: missing data section');
-        }
-        var rows = parts[3].split(',');
-        var grid = [];
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];
-            var rowArray = [];
-            for (var j = 0; j < row.length; j++) {
-                var current = parseInt(row[j], 10);
-                rowArray.push(current);
-            }
-            grid.push(rowArray);
-        }
-        if (mode === 0) {
-            debugLog('mode is 0 (P1)');
-            debugLog('checking condtions');
-            if (grid.length === C.PLACEMENT_GRID_ROWS && grid[0].length === C.PLACEMENT_GRID_COLS) {
-                debugLog('conditions passed');
-                for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
-                    for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
-                        fullGrid[row + 1][col + 1] = grid[row][col];
-                    }
-                }
-                debugLog('iterated over grid');
-            }
-        }
-        else if (mode === 1) {
-            debugLog('mode is 1 (P2)');
-            debugLog('translating grid');
-            var p2Grid = Grid.translateP1GridToP2Grid(grid);
-            debugLog('grid translated');
-            debugLog('checking condtions');
-            if (p2Grid.length === C.PLACEMENT_GRID_ROWS && p2Grid[0].length === C.PLACEMENT_GRID_COLS) {
-                debugLog('conditions passed');
-                for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
-                    for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
-                        fullGrid[row + 1][C.PLACEMENT_GRID_COLS + col + 2] = p2Grid[row][col];
-                    }
-                }
-                debugLog('iterated over grid');
-            }
-        }
-        debugLog('importGrid ends');
-    }
-    FileIO.importGrid = importGrid;
-    function importFile(event, mode, fullGrid) {
-        debugLog('importFile for P' + (mode + 1) + ' starts');
-        if (!event)
+var Interaction;
+(function (Interaction) {
+    var canvas = E.getCanvas();
+    var body = E.getBody();
+    function setupEventListeners() {
+        // build the canvas handler functions
+        Placement.setupHandlers(fullGrid);
+        // validate functions from other namespaces exist
+        if (!Placement.canvasMouseDownHandler)
             return;
-        if (!event.target)
+        if (!Placement.canvasMouseMoveHandler)
             return;
-        var target = event.target;
-        if (!target)
+        if (!Placement.canvasTouchStartHandler)
             return;
-        var files = target.files;
-        if (!files)
+        if (!Placement.canvasTouchMoveHandler)
             return;
-        debugLog('basic checks passed');
-        var _loop_1 = function (i) {
-            var reader = new FileReader();
-            var file = files[i];
-            reader.onload = function (e) {
-                var _a;
-                debugLog('reader.onload starts');
-                var content = (_a = e.target) === null || _a === void 0 ? void 0 : _a.result;
-                debugLog('content: ' + content);
-                debugLog('fullGrid before import:');
-                if (C.DEBUG) {
-                    Grid.logGrid(fullGrid);
-                }
-                importGrid(content, mode, fullGrid);
-                debugLog('fullGrid after import:');
-                if (C.DEBUG) {
-                    Grid.logGrid(fullGrid);
-                }
-                if (mode === 0) {
-                    Renderer.drawP1Grid(fullGrid);
-                }
-                else {
-                    Renderer.drawP2Preview(fullGrid);
-                }
-            };
-            reader.onerror = function (e) {
-                console.error("Error reading file: ".concat(file.name), e);
-            };
-            reader.readAsText(file);
-        };
-        for (var i = 0; i < files.length; i++) {
-            _loop_1(i);
+        if (!Placement.canvasTouchEndHandler)
+            return;
+        // unregister all existing event listeners
+        unregisterMainMenuEventListeners();
+        E.getContinueButton().removeEventListener('click', continueGame);
+        E.getNewGameButton().removeEventListener('click', newGamePlacement);
+        // add new event listeners
+        // mouse placement
+        canvas.addEventListener('mousedown', Placement.canvasMouseDownHandler);
+        canvas.addEventListener('mousemove', Placement.canvasMouseMoveHandler);
+        canvas.addEventListener('mouseup', Placement.endDrag);
+        if (!Options.getContinueDragWhenMouseLeavesCanvas()) {
+            canvas.addEventListener('mouseleave', Placement.endDrag);
+        }
+        body.addEventListener('mouseup', Placement.endDrag);
+        document.addEventListener('mouseout', Placement.mouseOutWhilePlacingHandler);
+        // touch placement
+        canvas.addEventListener('touchstart', Placement.canvasTouchStartHandler);
+        canvas.addEventListener('touchmove', Placement.canvasTouchMoveHandler);
+        canvas.addEventListener('touchend', Placement.canvasTouchEndHandler);
+        canvas.addEventListener('touchcancel', Placement.canvasTouchEndHandler);
+        // buttons
+        E.getGenerateP1GridButton().addEventListener('click', Grid.generateRandomP1Grid);
+        E.getGenerateP2GridButton().addEventListener('click', Grid.generateRandomP2Grid);
+        E.getExportButton().addEventListener('click', exportGridHandler);
+        E.getContinueButton().addEventListener('click', continueGame);
+        E.getNewGameButton().addEventListener('click', newGamePlacement);
+        E.getImportP1GridButton().addEventListener('change', importP1GridHandler);
+        E.getClearButton().addEventListener('click', Grid.clearGrid);
+        E.getImportP2GridButton().addEventListener('change', importP2GridHandler);
+        E.getPlayButton().addEventListener('click', startRound);
+        E.getDialogOkButton().addEventListener('click', Renderer.dialogOkHandler);
+        E.getMirrorP1GridButton().addEventListener('click', Grid.mirrorP1GridHandler);
+    }
+    Interaction.setupEventListeners = setupEventListeners;
+    function unregisterMainMenuEventListeners() {
+        // validate functions from other namespaces exist
+        if (!Placement.canvasMouseDownHandler)
+            return;
+        if (!Placement.canvasMouseMoveHandler)
+            return;
+        if (!Placement.canvasTouchStartHandler)
+            return;
+        if (!Placement.canvasTouchMoveHandler)
+            return;
+        if (!Placement.canvasTouchEndHandler)
+            return;
+        canvas.removeEventListener('mousedown', Placement.canvasMouseDownHandler);
+        canvas.removeEventListener('mousemove', Placement.canvasMouseMoveHandler);
+        canvas.removeEventListener('mouseup', Placement.endDrag);
+        canvas.removeEventListener('mouseleave', Placement.endDrag);
+        E.getBody().removeEventListener('mouseup', Placement.endDrag);
+        document.removeEventListener('mouseout', Placement.mouseOutWhilePlacingHandler);
+        canvas.removeEventListener('touchstart', Placement.canvasTouchStartHandler);
+        canvas.removeEventListener('touchmove', Placement.canvasTouchMoveHandler);
+        canvas.removeEventListener('touchend', Placement.canvasTouchEndHandler);
+        canvas.removeEventListener('touchcancel', Placement.canvasTouchEndHandler);
+        E.getGenerateP1GridButton().removeEventListener('click', Grid.generateRandomP1Grid);
+        E.getGenerateP2GridButton().removeEventListener('click', Grid.generateRandomP2Grid);
+        E.getExportButton().removeEventListener('click', exportGridHandler);
+        E.getImportP1GridButton().removeEventListener('change', importP1GridHandler);
+        E.getClearButton().removeEventListener('click', Grid.clearGrid);
+        E.getImportP2GridButton().removeEventListener('change', importP2GridHandler);
+        E.getPlayButton().removeEventListener('click', startRound);
+        E.getDialogOkButton().removeEventListener('click', Renderer.dialogOkHandler);
+        E.getMirrorP1GridButton().removeEventListener('click', Grid.mirrorP1GridHandler);
+    }
+    Interaction.unregisterMainMenuEventListeners = unregisterMainMenuEventListeners;
+    function exportGridHandler() {
+        FileIO.downloadConfiguration(fullGrid);
+    }
+    function importP1GridHandler(event) {
+        FileIO.importFile(event, 0, fullGrid);
+    }
+    function importP2GridHandler(event) {
+        FileIO.importFile(event, 1, fullGrid);
+    }
+})(Interaction || (Interaction = {}));
+var Options;
+(function (Options) {
+    var continueDragWhenMouseLeavesCanvas = true; // ToDo: Load from cookie
+    function getContinueDragWhenMouseLeavesCanvas() {
+        return continueDragWhenMouseLeavesCanvas;
+    }
+    Options.getContinueDragWhenMouseLeavesCanvas = getContinueDragWhenMouseLeavesCanvas;
+    function setContinueDragWhenMouseLeavesCanvas(continueDragWhenMouseLeavesCanvas) {
+        this.continueDragWhenMouseLeavesCanvas = continueDragWhenMouseLeavesCanvas;
+        // ToDo: Save config to cookie
+    }
+    Options.setContinueDragWhenMouseLeavesCanvas = setContinueDragWhenMouseLeavesCanvas;
+})(Options || (Options = {}));
+var Placement;
+(function (Placement) {
+    var isDragging = false;
+    var dragState = -1;
+    var lastTouchPosition = null;
+    Placement.canvasMouseDownHandler = null;
+    Placement.canvasMouseMoveHandler = null;
+    Placement.canvasTouchStartHandler = null;
+    Placement.canvasTouchMoveHandler = null;
+    Placement.canvasTouchEndHandler = null;
+    function setupHandlers(fullGrid) {
+        Placement.canvasMouseDownHandler = function (event) { return startDrag(event, fullGrid); };
+        Placement.canvasMouseMoveHandler = function (event) { return dragHandler(event, fullGrid); };
+        Placement.canvasTouchStartHandler = function (event) { return startTouchDrag(event, fullGrid); };
+        Placement.canvasTouchMoveHandler = function (event) { return touchDragHandler(event, fullGrid); };
+        Placement.canvasTouchEndHandler = function () { return endDrag(); };
+    }
+    Placement.setupHandlers = setupHandlers;
+    function startDrag(event, fullGrid) {
+        var _a = getP1CellFromEvent(event), row = _a.row, col = _a.col;
+        if (row === -1 || col === -1)
+            return;
+        isDragging = true;
+        dragState = fullGrid[row][col] === 0 ? 2 : 0;
+        toggleCell(row, col, fullGrid);
+    }
+    Placement.startDrag = startDrag;
+    function startTouchDrag(event, fullGrid) {
+        event.preventDefault(); // Prevent scrolling while drawing
+        if (event.touches.length !== 1)
+            return;
+        var touch = event.touches[0];
+        var _a = getP1CellFromTouch(touch), row = _a.row, col = _a.col;
+        if (row === -1 || col === -1)
+            return;
+        isDragging = true;
+        dragState = fullGrid[row][col] === 0 ? 2 : 0;
+        lastTouchPosition = { row: row, col: col };
+        toggleCell(row, col, fullGrid);
+    }
+    Placement.startTouchDrag = startTouchDrag;
+    function dragHandler(event, fullGrid) {
+        if (!isDragging)
+            return;
+        var _a = getP1CellFromEvent(event), row = _a.row, col = _a.col;
+        if (row === -1 || col === -1)
+            return;
+        if (dragState === 2 && fullGrid[row][col] === 0) {
+            fullGrid[row][col] = 2;
+            Renderer.drawP1Grid(fullGrid);
+        }
+        if (dragState === 0 && fullGrid[row][col] === 2) {
+            fullGrid[row][col] = 0;
+            Renderer.drawP1Grid(fullGrid);
         }
     }
-    FileIO.importFile = importFile;
-    function debugLog(message) {
-        if (C.DEBUG) {
-            console.log(message);
+    Placement.dragHandler = dragHandler;
+    function touchDragHandler(event, fullGrid) {
+        event.preventDefault(); // Prevent scrolling while drawing
+        if (!isDragging || event.touches.length !== 1)
+            return;
+        var touch = event.touches[0];
+        var _a = getP1CellFromTouch(touch), row = _a.row, col = _a.col;
+        if (row === -1 || col === -1)
+            return;
+        // Only update if we've moved to a new cell
+        if (lastTouchPosition && (lastTouchPosition.row !== row || lastTouchPosition.col !== col)) {
+            if (dragState === 2 && fullGrid[row][col] === 0) {
+                fullGrid[row][col] = 2;
+                Renderer.drawP1Grid(fullGrid);
+            }
+            if (dragState === 0 && fullGrid[row][col] === 2) {
+                fullGrid[row][col] = 0;
+                Renderer.drawP1Grid(fullGrid);
+            }
+            lastTouchPosition = { row: row, col: col };
         }
     }
-})(FileIO || (FileIO = {}));
+    Placement.touchDragHandler = touchDragHandler;
+    function endDrag() {
+        isDragging = false;
+        dragState = -1;
+        lastTouchPosition = null;
+    }
+    Placement.endDrag = endDrag;
+    function getP1CellFromEvent(event) {
+        var rect = E.getCanvas().getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+        return calculateP1Cell(x, y);
+    }
+    function getP1CellFromTouch(touch) {
+        var rect = E.getCanvas().getBoundingClientRect();
+        var x = touch.clientX - rect.left;
+        var y = touch.clientY - rect.top;
+        return calculateP1Cell(x, y);
+    }
+    function calculateP1Cell(x, y) {
+        var col = Math.floor(x / C.PLACEMENT_GRID_CELL_SIZE);
+        var row = Math.floor(y / C.PLACEMENT_GRID_CELL_SIZE);
+        if (col >= 0 && col < C.PLACEMENT_GRID_COLS && row >= 0 && row < C.PLACEMENT_GRID_ROWS) {
+            return { row: row + 1, col: col + 1 };
+        }
+        return { row: -1, col: -1 };
+    }
+    function toggleCell(row, col, fullGrid) {
+        fullGrid[row][col] = fullGrid[row][col] === 0 ? 2 : 0;
+        Renderer.drawP1Grid(fullGrid);
+    }
+    function mouseOutWhilePlacingHandler(event) {
+        if (!event.relatedTarget || event.relatedTarget === document.documentElement) {
+            Placement.endDrag();
+        }
+    }
+    Placement.mouseOutWhilePlacingHandler = mouseOutWhilePlacingHandler;
+})(Placement || (Placement = {}));
 var Renderer;
 (function (Renderer) {
     var canvas = E.getCanvas();
-    var previewCanvas = E.getPreviewCanvas();
     var ctx = canvas.getContext('2d');
+    if (!ctx)
+        throw new Error("canvas.getContext('2d)' is null");
+    var previewCanvas = E.getPreviewCanvas();
     var pctx = previewCanvas.getContext('2d');
+    if (!pctx)
+        throw new Error("previewCanvas.getContext('2d)' is null");
     var warningDialog = E.getWarningDialog();
     var dialogMessage = E.getDialogMessage();
     var speed = 1;
     function calcFullGridCellSize() {
         if (C.FRAME_WIDTH >= C.DESKTOP_BREAKPOINT) {
-            debugLog('Desktop detected');
+            D.debugLog('Desktop detected');
             return Math.min(C.FRAME_WIDTH, C.FRAME_HEIGHT) / (C.FULL_GRID_ROWS + 2);
         }
         else {
-            debugLog('Mobile detected');
+            D.debugLog('Mobile detected');
             return Math.min(C.FRAME_WIDTH, C.FRAME_HEIGHT) / (Math.max(C.FULL_GRID_ROWS, C.FULL_GRID_COLS) + 2);
         }
     }
@@ -767,8 +903,8 @@ var Renderer;
     }
     Renderer.setDisplay = setDisplay;
     function initializeCanvasForPlacement() {
-        canvas.width = placementGridWidth;
-        canvas.height = placementGridHeight;
+        canvas.width = (C.PLACEMENT_GRID_COLS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
+        canvas.height = (C.PLACEMENT_GRID_ROWS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
         previewCanvas.width = C.PREVIEW_CANVAS_SIZE;
         previewCanvas.height = C.PREVIEW_CANVAS_SIZE;
     }
@@ -810,8 +946,8 @@ var Renderer;
                 var y = row * previewCellSize;
                 pctx.strokeStyle = '#CCCCCC';
                 pctx.strokeRect(x, y, previewCellSize, previewCellSize);
-                var fullGridValue = fullGrid[row + 1][C.PLACEMENT_GRID_COLS + col + 2];
-                if (fullGridValue === 3) {
+                var value = fullGrid[row + 1][C.PLACEMENT_GRID_COLS + col + 2];
+                if (value === 3) {
                     pctx.fillStyle = '#FF0000';
                     pctx.fillRect(x, y, previewCellSize, previewCellSize);
                 }
@@ -878,34 +1014,177 @@ var Renderer;
         setDisplay(warningDialog, 'none');
     }
     Renderer.dialogOkHandler = dialogOkHandler;
-    function debugLog(message) {
-        if (C.DEBUG) {
-            console.log(message);
+    function setCanvasSize(mode) {
+        if (!mode)
+            throw new Error('mode is falsy: ' + mode);
+        if (mode === 'placement') {
+            canvas.width = (C.PLACEMENT_GRID_COLS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
+            canvas.height = (C.PLACEMENT_GRID_ROWS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
+        }
+        else if (mode === 'full') {
+            var fullGridCellSize_1 = calcFullGridCellSize();
+            canvas.width = (C.FULL_GRID_COLS * fullGridCellSize_1) + 1;
+            canvas.height = (C.FULL_GRID_ROWS * fullGridCellSize_1) + 1;
+        }
+        else {
+            throw new Error('Unknown mode: ' + mode);
         }
     }
+    Renderer.setCanvasSize = setCanvasSize;
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    Renderer.clearCanvas = clearCanvas;
 })(Renderer || (Renderer = {}));
-/// <reference path="./grid.ts" />
-/// <reference path="./render.ts" />
-/// <reference path="./placement.ts" />
-/// <reference path="./io.ts" />
+var Subtext;
+(function (Subtext) {
+    var subtext = E.getSubtext();
+    function setSubtext(message) {
+        subtext.innerHTML = message;
+    }
+    Subtext.setSubtext = setSubtext;
+    function showResultInSubtext(fullGrid, generations) {
+        var p1IsAlive = Grid.getP1IsAlive(fullGrid);
+        var p2IsAlive = Grid.getP2IsAlive(fullGrid);
+        var p1AliveAmount = Grid.countAliveP1(fullGrid);
+        var p2AliveAmount = Grid.countAliveP2(fullGrid);
+        var isStable = !Grid.gridIsEmpty(fullGrid) && !Grid.gridIsEmpty(lastGenGrids[0]) && Grid.gridEquals(fullGrid, lastGenGrids[0]);
+        if (p1IsAlive && p2IsAlive && generations === C.MAX_GENERATIONS) {
+            if (p1AliveAmount === p2AliveAmount) {
+                subtext.innerHTML = 'Both players survived for ' + C.MAX_GENERATIONS + ' generations and have ' + p1AliveAmount + ' living cells. Draw.';
+            }
+            else if (p1AliveAmount > p2AliveAmount) {
+                subtext.innerHTML = 'Both players survived for ' + C.MAX_GENERATIONS + ' generations. P1 wins with ' + p1AliveAmount + ' to ' + p2AliveAmount + ' living cells.';
+            }
+            else {
+                subtext.innerHTML = 'Both players survived for ' + C.MAX_GENERATIONS + ' generations. P2 wins with ' + p2AliveAmount + ' to ' + p1AliveAmount + ' living cells.';
+            }
+            return;
+        }
+        var generationsString = '';
+        if (generations === 1) {
+            generationsString = 'only 1 generation';
+        }
+        else {
+            generationsString = generations + ' generations';
+        }
+        if (p1IsAlive && !p2IsAlive) {
+            subtext.innerHTML = 'P1 won after ' + generationsString + " by killing all of P2's cells.";
+            return;
+        }
+        if (!p1IsAlive && p2IsAlive) {
+            subtext.innerHTML = 'P2 won after ' + generationsString + " by killing all of P1's cells.";
+            return;
+        }
+        if (!p1IsAlive && !p2IsAlive) {
+            subtext.innerHTML = 'Both players died at the same time after ' + generationsString + '. Draw.';
+            return;
+        }
+        if (isStable) {
+            if (p1AliveAmount === p2AliveAmount) {
+                subtext.innerHTML = 'Stable configuration detected after ' + generationsString + ' and both players have ' + p1AliveAmount + ' living cells. Draw.';
+            }
+            else if (p1AliveAmount > p2AliveAmount) {
+                subtext.innerHTML = 'Stable configuration detected after ' + generationsString + '. P1 wins with ' + p1AliveAmount + ' to ' + p2AliveAmount + ' living cells.';
+            }
+            else {
+                subtext.innerHTML = 'Stable configuration detected after ' + generationsString + '. P2 wins with ' + p2AliveAmount + ' to ' + p1AliveAmount + ' living cells.';
+            }
+        }
+        else {
+            if (p1AliveAmount === p2AliveAmount) {
+                subtext.innerHTML = 'Loop detected after ' + generationsString + ' and both players have ' + p1AliveAmount + ' living cells. Draw.';
+            }
+            else if (p1AliveAmount > p2AliveAmount) {
+                subtext.innerHTML = 'Loop detected after ' + generationsString + '. P1 wins with ' + p1AliveAmount + ' to ' + p2AliveAmount + ' living cells.';
+            }
+            else {
+                subtext.innerHTML = 'Loop detected after ' + generationsString + '. P2 wins with ' + p2AliveAmount + ' to ' + p1AliveAmount + ' living cells.';
+            }
+        }
+    }
+    Subtext.showResultInSubtext = showResultInSubtext;
+})(Subtext || (Subtext = {}));
+var Themes;
+(function (Themes) {
+    /**
+     * Loads an incremental stylesheet into the document.
+     * This function creates a new <link> element, sets its attributes to link to the provided stylesheet path and appends it to the document head.
+     * If the path is 'auto', it will load a seasonal stylesheet based on the current date or none if it isn't time for any special season.
+     *
+     * @param {string} stylesheetPath - The path to the stylesheet to be loaded. If 'auto', a seasonal stylesheet will be loaded.
+     * @returns {void}
+     */
+    function loadTemporaryIncrementalStylesheet(stylesheetPath) {
+        var sheetLink = document.createElement('link');
+        sheetLink.rel = 'stylesheet';
+        sheetLink.type = 'text/css';
+        if (stylesheetPath === 'auto') {
+            if (seasonIsEaster()) {
+                D.debugLog('Season is easter.');
+                sheetLink.href = 'css/easter.css';
+            }
+            else if (seasonIsHalloween()) {
+                D.debugLog('Season is halloween.');
+                sheetLink.href = 'css/halloween.css';
+            }
+            else if (seasonIsChristmas()) {
+                D.debugLog('Season is christmas.');
+                sheetLink.href = 'css/christmas.css';
+            }
+            else {
+                D.debugLog('No theme found for current season. Using default theme only.');
+                return;
+            }
+        }
+        else {
+            sheetLink.href = stylesheetPath;
+        }
+        document.head.appendChild(sheetLink);
+    }
+    Themes.loadTemporaryIncrementalStylesheet = loadTemporaryIncrementalStylesheet;
+    function seasonIsEaster() {
+        // ToDo: Make the time frame for easter accurate for each year individually
+        var now = new Date();
+        var month = now.getMonth();
+        var day = now.getDate();
+        // Easter typically falls somewhere between March 22 and April 25 but varies a lot
+        return (month === 2 && day >= 21) || (month === 3 && day <= 26);
+    }
+    function seasonIsHalloween() {
+        var now = new Date();
+        var month = now.getMonth();
+        var day = now.getDate();
+        return month === 9 && day >= 29 || month === 10 && day <= 3;
+    }
+    function seasonIsChristmas() {
+        var now = new Date();
+        var month = now.getMonth();
+        var day = now.getDate();
+        return month === 11 && day >= 20 || month === 0 && day <= 6;
+    }
+})(Themes || (Themes = {}));
 /// <reference path="./constants.ts" />
+/// <reference path="./debug.ts" />
+/// <reference path="./elements.ts" />
+/// <reference path="./file-io.ts" />
+/// <reference path="./grid.ts" />
+/// <reference path="./interaction.ts" />
+/// <reference path="./options.ts" />
+/// <reference path="./placement.ts" />
+/// <reference path="./render.ts" />
+/// <reference path="./subtext.ts" />
+/// <reference path="./themes.ts" />
 // Sirius GG's "Conway's Game of Life" PVP
 // A 2-player Game of Life Esports implementation
 var fullGrid = Grid.buildFullGrid();
 var initialGrid = Grid.buildFullGrid();
 var lastGenGrids = Grid.buildFullGrids(C.LOOP_CHECK_GENERATIONS);
 var nextGenGrid = Grid.buildFullGrid();
-var placementGridWidth = (C.PLACEMENT_GRID_COLS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
-var placementGridHeight = (C.PLACEMENT_GRID_ROWS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
 var sleepTime = C.INITIAL_SLEEP_TIME;
 var endlessRun = true;
 var gameHasEndedManually = false;
 var optionContinueDragWhenMouseLeavesCanvas = true;
-var canvas = E.getCanvas();
-var previewCanvas = E.getPreviewCanvas();
-var ctx = canvas.getContext('2d');
-var pctx = previewCanvas.getContext('2d');
-var subtext = E.getSubtext();
 var leftBox = E.getLeftBox();
 var buttonPanelRight = E.getButtonPanelRight();
 var warningDialog = E.getWarningDialog();
@@ -919,7 +1198,7 @@ function sleepWithRedraw(milliseconds, callback, generation) {
         if (current - start < milliseconds) {
             Renderer.drawFullGrid(fullGrid);
             if (generation != undefined) {
-                subtext.innerHTML = 'Generation ' + generation + '/' + C.MAX_GENERATIONS + ' (speed: ' + Renderer.getSpeed() + 'x)';
+                Subtext.setSubtext('Generation ' + generation + '/' + C.MAX_GENERATIONS + ' (speed: ' + Renderer.getSpeed() + 'x)');
             }
             requestAnimationFrame(checkTime);
         }
@@ -928,66 +1207,6 @@ function sleepWithRedraw(milliseconds, callback, generation) {
         }
     }
     checkTime();
-}
-function showResultInSubtext(generations) {
-    var p1IsAlive = Grid.getP1IsAlive();
-    var p2IsAlive = Grid.getP2IsAlive();
-    var p1AliveAmount = Grid.countAliveP1();
-    var p2AliveAmount = Grid.countAliveP2();
-    var isStable = !Grid.gridIsEmpty(fullGrid) && !Grid.gridIsEmpty(lastGenGrids[0]) && Grid.gridEquals(fullGrid, lastGenGrids[0]);
-    if (p1IsAlive && p2IsAlive && generations === C.MAX_GENERATIONS) {
-        if (p1AliveAmount === p2AliveAmount) {
-            subtext.innerHTML = 'Both players survived for ' + C.MAX_GENERATIONS + ' generations and have ' + p1AliveAmount + ' living cells. Draw.';
-        }
-        else if (p1AliveAmount > p2AliveAmount) {
-            subtext.innerHTML = 'Both players survived for ' + C.MAX_GENERATIONS + ' generations. P1 wins with ' + p1AliveAmount + ' to ' + p2AliveAmount + ' living cells.';
-        }
-        else {
-            subtext.innerHTML = 'Both players survived for ' + C.MAX_GENERATIONS + ' generations. P2 wins with ' + p2AliveAmount + ' to ' + p1AliveAmount + ' living cells.';
-        }
-        return;
-    }
-    var generationsString = '';
-    if (generations === 1) {
-        generationsString = 'only 1 generation';
-    }
-    else {
-        generationsString = generations + ' generations';
-    }
-    if (p1IsAlive && !p2IsAlive) {
-        subtext.innerHTML = 'P1 won after ' + generationsString + " by killing all of P2's cells.";
-        return;
-    }
-    if (!p1IsAlive && p2IsAlive) {
-        subtext.innerHTML = 'P2 won after ' + generationsString + " by killing all of P1's cells.";
-        return;
-    }
-    if (!p1IsAlive && !p2IsAlive) {
-        subtext.innerHTML = 'Both players died at the same time after ' + generationsString + '. Draw.';
-        return;
-    }
-    if (isStable) {
-        if (p1AliveAmount === p2AliveAmount) {
-            subtext.innerHTML = 'Stable configuration detected after ' + generationsString + ' and both players have ' + p1AliveAmount + ' living cells. Draw.';
-        }
-        else if (p1AliveAmount > p2AliveAmount) {
-            subtext.innerHTML = 'Stable configuration detected after ' + generationsString + '. P1 wins with ' + p1AliveAmount + ' to ' + p2AliveAmount + ' living cells.';
-        }
-        else {
-            subtext.innerHTML = 'Stable configuration detected after ' + generationsString + '. P2 wins with ' + p2AliveAmount + ' to ' + p1AliveAmount + ' living cells.';
-        }
-    }
-    else {
-        if (p1AliveAmount === p2AliveAmount) {
-            subtext.innerHTML = 'Loop detected after ' + generationsString + ' and both players have ' + p1AliveAmount + ' living cells. Draw.';
-        }
-        else if (p1AliveAmount > p2AliveAmount) {
-            subtext.innerHTML = 'Loop detected after ' + generationsString + '. P1 wins with ' + p1AliveAmount + ' to ' + p2AliveAmount + ' living cells.';
-        }
-        else {
-            subtext.innerHTML = 'Loop detected after ' + generationsString + '. P2 wins with ' + p2AliveAmount + ' to ' + p1AliveAmount + ' living cells.';
-        }
-    }
 }
 function _continueGame() {
     if (gameHasEndedManually) {
@@ -1031,49 +1250,44 @@ function newGamePlacement() {
             Renderer.setDisplay(leftBox, 'flex');
         }
         Renderer.setDisplay(buttonPanelRight, 'flex');
-        canvas.width = placementGridWidth;
-        canvas.height = placementGridHeight;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        Renderer.setCanvasSize('placement');
+        Renderer.clearCanvas();
         Renderer.setSpeed(1);
         sleepTime = C.INITIAL_SLEEP_TIME;
-        subtext.innerHTML = "Sirius GG's Conway's Game of Life PVP";
+        Subtext.setSubtext("Sirius GG's Conway's Game of Life PVP");
         Renderer.drawP1Grid(fullGrid);
         Renderer.drawP2Preview(fullGrid);
-        setupEventListeners();
+        Interaction.setupEventListeners();
     }, sleepTime * 1.1);
 }
 function startRound() {
-    if (!Grid.getP1IsAlive()) {
+    if (!Grid.getP1IsAlive(fullGrid)) {
         Renderer.showWarningDialog("P1 has an empty grid. Cannot start.");
         return;
     }
-    if (!Grid.getP2IsAlive()) {
+    if (!Grid.getP2IsAlive(fullGrid)) {
         Renderer.showWarningDialog("P2 has an empty grid. Cannot start.");
         return;
     }
-    unregisterMainMenuEventListeners();
+    Interaction.unregisterMainMenuEventListeners();
     gameHasEndedManually = false;
     Grid.gridCopy(fullGrid, initialGrid);
     Renderer.setDisplay(leftBox, 'none');
     Renderer.setDisplay(buttonPanelRight, 'none');
-    var fullGridCellSize = Renderer.calcFullGridCellSize();
-    var fullGridWidth = (C.FULL_GRID_COLS * fullGridCellSize) + 1;
-    var fullGridHeight = (C.FULL_GRID_ROWS * fullGridCellSize) + 1;
-    canvas.width = fullGridWidth;
-    canvas.height = fullGridHeight;
+    Renderer.setCanvasSize('full');
     Renderer.drawFullGrid(fullGrid);
     window.scrollTo(0, 0);
     var generations = 0;
     function advanceAndCheck() {
-        if (generations < C.MAX_GENERATIONS && !Grid.gameHasEnded()) {
+        if (generations < C.MAX_GENERATIONS && !Grid.gameHasEnded(fullGrid, lastGenGrids)) {
             Renderer.updateSpeed(generations);
             sleepTime = C.INITIAL_SLEEP_TIME / Renderer.getSpeed();
             sleepWithRedraw(sleepTime, function () {
                 Grid.advanceGeneration(fullGrid, nextGenGrid);
                 Renderer.drawFullGrid(fullGrid);
                 generations++;
-                if (Grid.gameHasEnded() || generations >= C.MAX_GENERATIONS) {
-                    showResultInSubtext(generations);
+                if (Grid.gameHasEnded(fullGrid, lastGenGrids) || generations >= C.MAX_GENERATIONS) {
+                    Subtext.showResultInSubtext(fullGrid, generations);
                     Renderer.setDisplay(continueButton, 'block');
                     Renderer.setDisplay(newGameButton, 'block');
                     return;
@@ -1082,8 +1296,8 @@ function startRound() {
             }, generations);
         }
         else {
-            if (generations >= C.MAX_GENERATIONS && !Grid.gameHasEnded()) {
-                showResultInSubtext(C.MAX_GENERATIONS);
+            if (generations >= C.MAX_GENERATIONS && !Grid.gameHasEnded(fullGrid, lastGenGrids)) {
+                Subtext.showResultInSubtext(fullGrid, C.MAX_GENERATIONS);
                 Renderer.setDisplay(continueButton, 'block');
                 Renderer.setDisplay(newGameButton, 'block');
             }
@@ -1091,101 +1305,12 @@ function startRound() {
     }
     advanceAndCheck();
 }
-function exportGridHandler() {
-    FileIO.exportGrid(fullGrid, C.SAVE_FILE_VERSION, C.FILE_EXTENSION);
-}
-function importP1GridHandler(event) {
-    FileIO.importFile(event, 0, fullGrid);
-}
-function importP2GridHandler(event) {
-    FileIO.importFile(event, 1, fullGrid);
-}
-function setupEventListeners() {
-    // build the canvas handler functions
-    Placement.setupHandlers(fullGrid);
-    // validate functions from other namespaces exist
-    if (!Placement.canvasMouseDownHandler)
-        return;
-    if (!Placement.canvasMouseMoveHandler)
-        return;
-    if (!Placement.canvasTouchStartHandler)
-        return;
-    if (!Placement.canvasTouchMoveHandler)
-        return;
-    if (!Placement.canvasTouchEndHandler)
-        return;
-    // unregister all existing event listeners
-    unregisterMainMenuEventListeners();
-    E.getContinueButton().removeEventListener('click', continueGame);
-    E.getNewGameButton().removeEventListener('click', newGamePlacement);
-    // add new event listeners
-    // mouse placement
-    canvas.addEventListener('mousedown', Placement.canvasMouseDownHandler);
-    canvas.addEventListener('mousemove', Placement.canvasMouseMoveHandler);
-    canvas.addEventListener('mouseup', Placement.endDrag);
-    if (!optionContinueDragWhenMouseLeavesCanvas) {
-        canvas.addEventListener('mouseleave', Placement.endDrag);
-    }
-    // touch placement
-    canvas.addEventListener('touchstart', Placement.canvasTouchStartHandler);
-    canvas.addEventListener('touchmove', Placement.canvasTouchMoveHandler);
-    canvas.addEventListener('touchend', Placement.canvasTouchEndHandler);
-    canvas.addEventListener('touchcancel', Placement.canvasTouchEndHandler);
-    // buttons
-    E.getGenerateP1GridButton().addEventListener('click', Grid.generateRandomP1Grid);
-    E.getGenerateP2GridButton().addEventListener('click', Grid.generateRandomP2Grid);
-    E.getExportButton().addEventListener('click', exportGridHandler);
-    E.getContinueButton().addEventListener('click', continueGame);
-    E.getNewGameButton().addEventListener('click', newGamePlacement);
-    E.getImportP1GridButton().addEventListener('change', importP1GridHandler);
-    E.getClearButton().addEventListener('click', Grid.clearGrid);
-    E.getImportP2GridButton().addEventListener('change', importP2GridHandler);
-    E.getPlayButton().addEventListener('click', startRound);
-    E.getDialogOkButton().addEventListener('click', Renderer.dialogOkHandler);
-    E.getMirrorP1GridButton().addEventListener('click', Grid.mirrorP1Grid);
-}
-function unregisterMainMenuEventListeners() {
-    // validate functions from other namespaces exist
-    if (!Placement.canvasMouseDownHandler)
-        return;
-    if (!Placement.canvasMouseMoveHandler)
-        return;
-    if (!Placement.canvasTouchStartHandler)
-        return;
-    if (!Placement.canvasTouchMoveHandler)
-        return;
-    if (!Placement.canvasTouchEndHandler)
-        return;
-    if (!Placement.canvasTouchEndHandler)
-        return;
-    canvas.removeEventListener('mousedown', Placement.canvasMouseDownHandler);
-    canvas.removeEventListener('mousemove', Placement.canvasMouseMoveHandler);
-    canvas.removeEventListener('mouseup', Placement.endDrag);
-    canvas.removeEventListener('mouseleave', Placement.endDrag);
-    canvas.removeEventListener('touchstart', Placement.canvasTouchStartHandler);
-    canvas.removeEventListener('touchmove', Placement.canvasTouchMoveHandler);
-    canvas.removeEventListener('touchend', Placement.canvasTouchEndHandler);
-    canvas.removeEventListener('touchcancel', Placement.canvasTouchEndHandler);
-    E.getGenerateP1GridButton().removeEventListener('click', Grid.generateRandomP1Grid);
-    E.getGenerateP2GridButton().removeEventListener('click', Grid.generateRandomP2Grid);
-    E.getExportButton().removeEventListener('click', exportGridHandler);
-    E.getImportP1GridButton().removeEventListener('change', importP1GridHandler);
-    E.getClearButton().removeEventListener('click', Grid.clearGrid);
-    E.getImportP2GridButton().removeEventListener('change', importP2GridHandler);
-    E.getPlayButton().removeEventListener('click', startRound);
-    E.getDialogOkButton().removeEventListener('click', Renderer.dialogOkHandler);
-    E.getMirrorP1GridButton().removeEventListener('click', Grid.mirrorP1Grid);
-}
-function debugLog(message) {
-    if (C.DEBUG) {
-        console.log(message);
-    }
-}
 Renderer.setDisplay(E.getNoJs(), 'none');
 Renderer.setDisplay(E.getLoading(), 'flex');
+// Themes.loadTemporaryIncrementalStylesheet('auto'); // ToDo: Activate and set to 'auto' for final release
 Renderer.initializeCanvasForPlacement();
 Renderer.drawP1Grid(fullGrid);
 Renderer.drawP2Preview(fullGrid);
-setupEventListeners();
+Interaction.setupEventListeners();
 Renderer.setDisplay(E.getLoading(), 'none');
 Renderer.setDisplay(E.getGameContainer(), 'flex');

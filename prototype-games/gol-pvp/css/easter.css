@@ -1,0 +1,14 @@
+#game-canvas,
+#bottom-box,
+#button-panel-right,
+#left-box > div,
+button,
+.looks-like-button,
+#p2-preview-canvas,
+.left-box-button-icon {
+  border-color: #FFB6C1;
+}
+
+#left-box > div {
+  background: linear-gradient(90deg, #FFD700 0%, #a1ff0a 75%, #00ff22 100%);
+}
