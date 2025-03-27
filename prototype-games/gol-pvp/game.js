@@ -1307,7 +1307,7 @@ function startRound() {
 }
 Renderer.setDisplay(E.getNoJs(), 'none');
 Renderer.setDisplay(E.getLoading(), 'flex');
-// Themes.loadTemporaryIncrementalStylesheet('auto'); // ToDo: Activate and set to 'auto' for final release
+Themes.loadTemporaryIncrementalStylesheet('auto'); // ToDo: Activate and set to 'auto' for final release
 Renderer.initializeCanvasForPlacement();
 Renderer.drawP1Grid(fullGrid);
 Renderer.drawP2Preview(fullGrid);
