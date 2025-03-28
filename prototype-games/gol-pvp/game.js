@@ -1,11 +1,8 @@
 var C;
 (function (C) {
-    C.FRAME_WIDTH = window.innerWidth;
-    C.FRAME_HEIGHT = window.innerHeight;
     C.DESKTOP_BREAKPOINT = 1024;
     C.PLACEMENT_GRID_COLS = 15;
     C.PLACEMENT_GRID_ROWS = 15;
-    C.PLACEMENT_GRID_CELL_SIZE = Math.min(C.FRAME_WIDTH, C.FRAME_HEIGHT) / (C.PLACEMENT_GRID_ROWS + 2); // ToDo: Should probably make this let instead of const and move out of this file for client resizing update
     C.FULL_GRID_COLS = (2 * C.PLACEMENT_GRID_COLS) + 3;
     C.FULL_GRID_ROWS = C.PLACEMENT_GRID_ROWS + 2;
     C.MAX_GENERATIONS = 2500;
@@ -290,10 +287,10 @@ var FileIO;
                     Grid.logGrid(fullGrid);
                 }
                 if (mode === 0) {
-                    Renderer.drawP1Grid(fullGrid);
+                    R.drawP1Grid(fullGrid);
                 }
                 else {
-                    Renderer.drawP2Preview(fullGrid);
+                    R.drawP2Preview(fullGrid);
                 }
             };
             reader.onerror = function (e) {
@@ -374,7 +371,7 @@ var Grid;
                 }
             }
         }
-        Renderer.drawP1Grid(fullGrid);
+        R.drawP1Grid(fullGrid);
     }
     Grid.generateRandomP1Grid = generateRandomP1Grid;
     function generateRandomP2Grid() {
@@ -391,7 +388,7 @@ var Grid;
                 }
             }
         }
-        Renderer.drawP2Preview(fullGrid);
+        R.drawP2Preview(fullGrid);
     }
     Grid.generateRandomP2Grid = generateRandomP2Grid;
     function clearGrid() {
@@ -400,7 +397,7 @@ var Grid;
                 fullGrid[row][col] = 0;
             }
         }
-        Renderer.drawP1Grid(fullGrid);
+        R.drawP1Grid(fullGrid);
     }
     Grid.clearGrid = clearGrid;
     function mirrorP1Grid(fullGrid) {
@@ -417,7 +414,7 @@ var Grid;
                 fullGrid[row + 1][C.PLACEMENT_GRID_COLS + col + 2] = p2Grid[row][col];
             }
         }
-        Renderer.drawP2Preview(fullGrid);
+        R.drawP2Preview(fullGrid);
     }
     Grid.mirrorP1Grid = mirrorP1Grid;
     function mirrorP1GridHandler() {
@@ -523,6 +520,7 @@ var Grid;
             counter++;
         return counter;
     }
+    Grid.getAliveNeighbors = getAliveNeighbors;
     function getP1Neighbors(row, col, grid) {
         var counter = 0;
         if (grid[translateRow(row - 1)][translateCol(col - 1)] === 2)
@@ -543,6 +541,7 @@ var Grid;
             counter++;
         return counter;
     }
+    Grid.getP1Neighbors = getP1Neighbors;
     function getP2Neighbors(row, col, grid) {
         var counter = 0;
         if (grid[translateRow(row - 1)][translateCol(col - 1)] === 3)
@@ -563,44 +562,7 @@ var Grid;
             counter++;
         return counter;
     }
-    function advanceGeneration(grid, nextGenGrid) {
-        for (var row = 0; row < grid.length; row++) {
-            for (var col = 0; col < grid[row].length; col++) {
-                var neighbors = getAliveNeighbors(row, col, grid);
-                if (grid[row][col] != 0 && neighbors < 2)
-                    nextGenGrid[row][col] = 0;
-                if (grid[row][col] != 0 && (neighbors === 2 || neighbors === 3))
-                    nextGenGrid[row][col] = grid[row][col];
-                if (grid[row][col] != 0 && neighbors > 3)
-                    nextGenGrid[row][col] = 0;
-                if (grid[row][col] == 0 && neighbors === 3) {
-                    if (getP1Neighbors(row, col, grid) > getP2Neighbors(row, col, grid)) {
-                        nextGenGrid[row][col] = 2;
-                    }
-                    else {
-                        nextGenGrid[row][col] = 3;
-                    }
-                }
-            }
-        }
-        var currentGridCopy = Grid.buildFullGrid();
-        for (var row = 0; row < grid.length; row++) {
-            for (var col = 0; col < grid[row].length; col++) {
-                currentGridCopy[row][col] = grid[row][col];
-            }
-        }
-        for (var i = C.LOOP_CHECK_GENERATIONS - 1; i > 0; i--) {
-            lastGenGrids[i] = lastGenGrids[i - 1];
-        }
-        lastGenGrids[0] = currentGridCopy;
-        for (var row = 0; row < grid.length; row++) {
-            for (var col = 0; col < grid[row].length; col++) {
-                grid[row][col] = nextGenGrid[row][col];
-                nextGenGrid[row][col] = 0;
-            }
-        }
-    }
-    Grid.advanceGeneration = advanceGeneration;
+    Grid.getP2Neighbors = getP2Neighbors;
     function translateRow(x) {
         if (x < 0) {
             return x += C.FULL_GRID_ROWS;
@@ -660,8 +622,8 @@ var Interaction;
             return;
         // unregister all existing event listeners
         unregisterMainMenuEventListeners();
-        E.getContinueButton().removeEventListener('click', continueGame);
-        E.getNewGameButton().removeEventListener('click', newGamePlacement);
+        E.getContinueButton().removeEventListener('click', Match.continueGame);
+        E.getNewGameButton().removeEventListener('click', Match.newGamePlacement);
         // add new event listeners
         // mouse placement
         canvas.addEventListener('mousedown', Placement.canvasMouseDownHandler);
@@ -681,13 +643,13 @@ var Interaction;
         E.getGenerateP1GridButton().addEventListener('click', Grid.generateRandomP1Grid);
         E.getGenerateP2GridButton().addEventListener('click', Grid.generateRandomP2Grid);
         E.getExportButton().addEventListener('click', exportGridHandler);
-        E.getContinueButton().addEventListener('click', continueGame);
-        E.getNewGameButton().addEventListener('click', newGamePlacement);
+        E.getContinueButton().addEventListener('click', Match.continueGame);
+        E.getNewGameButton().addEventListener('click', Match.newGamePlacement);
         E.getImportP1GridButton().addEventListener('change', importP1GridHandler);
         E.getClearButton().addEventListener('click', Grid.clearGrid);
         E.getImportP2GridButton().addEventListener('change', importP2GridHandler);
-        E.getPlayButton().addEventListener('click', startRound);
-        E.getDialogOkButton().addEventListener('click', Renderer.dialogOkHandler);
+        E.getPlayButton().addEventListener('click', Match.startRound);
+        E.getDialogOkButton().addEventListener('click', R.dialogOkHandler);
         E.getMirrorP1GridButton().addEventListener('click', Grid.mirrorP1GridHandler);
     }
     Interaction.setupEventListeners = setupEventListeners;
@@ -719,8 +681,8 @@ var Interaction;
         E.getImportP1GridButton().removeEventListener('change', importP1GridHandler);
         E.getClearButton().removeEventListener('click', Grid.clearGrid);
         E.getImportP2GridButton().removeEventListener('change', importP2GridHandler);
-        E.getPlayButton().removeEventListener('click', startRound);
-        E.getDialogOkButton().removeEventListener('click', Renderer.dialogOkHandler);
+        E.getPlayButton().removeEventListener('click', Match.startRound);
+        E.getDialogOkButton().removeEventListener('click', R.dialogOkHandler);
         E.getMirrorP1GridButton().removeEventListener('click', Grid.mirrorP1GridHandler);
     }
     Interaction.unregisterMainMenuEventListeners = unregisterMainMenuEventListeners;
@@ -734,6 +696,171 @@ var Interaction;
         FileIO.importFile(event, 1, fullGrid);
     }
 })(Interaction || (Interaction = {}));
+var Match;
+(function (Match) {
+    var leftBox = E.getLeftBox();
+    var buttonPanelRight = E.getButtonPanelRight();
+    var continueButton = E.getContinueButton();
+    var newGameButton = E.getNewGameButton();
+    var sleepTime = C.INITIAL_SLEEP_TIME;
+    var endlessRun = true;
+    var gameHasEndedManually = false;
+    function sleepWithRedraw(milliseconds, callback, generation) {
+        var start = Date.now();
+        function checkTime() {
+            var current = Date.now();
+            if (current - start < milliseconds) {
+                R.drawFullGrid(fullGrid);
+                if (generation != undefined) {
+                    Subtext.setSubtext('Generation ' + generation + '/' + C.MAX_GENERATIONS + ' (speed: ' + R.getSpeed() + 'x)');
+                }
+                requestAnimationFrame(checkTime);
+            }
+            else {
+                callback();
+            }
+        }
+        checkTime();
+    }
+    function _continueGame() {
+        if (gameHasEndedManually) {
+            endlessRun = false;
+            return;
+        }
+        sleepWithRedraw(sleepTime, function () {
+            if (!gameHasEndedManually) {
+                advanceGeneration(fullGrid, nextGenGrid);
+                R.drawFullGrid(fullGrid);
+            }
+            if (endlessRun && !gameHasEndedManually) {
+                _continueGame();
+            }
+        }, undefined);
+    }
+    function continueGame() {
+        endlessRun = true;
+        R.setDisplay(E.getContinueButton(), 'none');
+        _continueGame();
+    }
+    Match.continueGame = continueGame;
+    function newGamePlacement() {
+        gameHasEndedManually = true;
+        endlessRun = false;
+        setTimeout(function () {
+            R.setDisplay(E.getContinueButton(), 'none');
+            R.setDisplay(E.getNewGameButton(), 'none');
+            for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
+                for (var col = 0; col < C.FULL_GRID_COLS; col++) {
+                    fullGrid[row][col] = initialGrid[row][col];
+                    nextGenGrid[row][col] = 0;
+                }
+            }
+            for (var i = 0; i < C.LOOP_CHECK_GENERATIONS; i++) {
+                lastGenGrids[i] = Grid.buildFullGrid();
+            }
+            if (window.innerWidth < C.DESKTOP_BREAKPOINT) {
+                R.setDisplay(leftBox, 'grid');
+            }
+            else {
+                R.setDisplay(leftBox, 'flex');
+            }
+            R.setDisplay(buttonPanelRight, 'flex');
+            R.setCanvasSize('placement');
+            R.clearCanvas();
+            R.setSpeed(1);
+            sleepTime = C.INITIAL_SLEEP_TIME;
+            Subtext.setSubtext("Sirius GG's Conway's Game of Life PVP");
+            R.drawP1Grid(fullGrid);
+            R.drawP2Preview(fullGrid);
+            Interaction.setupEventListeners();
+        }, sleepTime * 1.1);
+    }
+    Match.newGamePlacement = newGamePlacement;
+    function startRound() {
+        if (!Grid.getP1IsAlive(fullGrid)) {
+            R.showWarningDialog("P1 has an empty grid. Cannot start.");
+            return;
+        }
+        if (!Grid.getP2IsAlive(fullGrid)) {
+            R.showWarningDialog("P2 has an empty grid. Cannot start.");
+            return;
+        }
+        Interaction.unregisterMainMenuEventListeners();
+        gameHasEndedManually = false;
+        Grid.gridCopy(fullGrid, initialGrid);
+        R.setDisplay(leftBox, 'none');
+        R.setDisplay(buttonPanelRight, 'none');
+        R.setCanvasSize('full');
+        R.drawFullGrid(fullGrid);
+        window.scrollTo(0, 0);
+        var generations = 0;
+        function advanceAndCheck() {
+            if (generations < C.MAX_GENERATIONS && !Grid.gameHasEnded(fullGrid, lastGenGrids)) {
+                R.updateSpeed(generations);
+                sleepTime = C.INITIAL_SLEEP_TIME / R.getSpeed();
+                sleepWithRedraw(sleepTime, function () {
+                    advanceGeneration(fullGrid, nextGenGrid);
+                    R.drawFullGrid(fullGrid);
+                    generations++;
+                    if (Grid.gameHasEnded(fullGrid, lastGenGrids) || generations >= C.MAX_GENERATIONS) {
+                        Subtext.showResultInSubtext(fullGrid, generations);
+                        R.setDisplay(continueButton, 'block');
+                        R.setDisplay(newGameButton, 'block');
+                        return;
+                    }
+                    advanceAndCheck();
+                }, generations);
+            }
+            else {
+                if (generations >= C.MAX_GENERATIONS && !Grid.gameHasEnded(fullGrid, lastGenGrids)) {
+                    Subtext.showResultInSubtext(fullGrid, C.MAX_GENERATIONS);
+                    R.setDisplay(continueButton, 'block');
+                    R.setDisplay(newGameButton, 'block');
+                }
+            }
+        }
+        advanceAndCheck();
+    }
+    Match.startRound = startRound;
+    function advanceGeneration(grid, nextGenGrid) {
+        for (var row = 0; row < grid.length; row++) {
+            for (var col = 0; col < grid[row].length; col++) {
+                var neighbors = Grid.getAliveNeighbors(row, col, grid);
+                if (grid[row][col] != 0 && neighbors < 2)
+                    nextGenGrid[row][col] = 0;
+                if (grid[row][col] != 0 && (neighbors === 2 || neighbors === 3))
+                    nextGenGrid[row][col] = grid[row][col];
+                if (grid[row][col] != 0 && neighbors > 3)
+                    nextGenGrid[row][col] = 0;
+                if (grid[row][col] == 0 && neighbors === 3) {
+                    if (Grid.getP1Neighbors(row, col, grid) > Grid.getP2Neighbors(row, col, grid)) {
+                        nextGenGrid[row][col] = 2;
+                    }
+                    else {
+                        nextGenGrid[row][col] = 3;
+                    }
+                }
+            }
+        }
+        var currentGridCopy = Grid.buildFullGrid();
+        for (var row = 0; row < grid.length; row++) {
+            for (var col = 0; col < grid[row].length; col++) {
+                currentGridCopy[row][col] = grid[row][col];
+            }
+        }
+        for (var i = C.LOOP_CHECK_GENERATIONS - 1; i > 0; i--) {
+            lastGenGrids[i] = lastGenGrids[i - 1];
+        }
+        lastGenGrids[0] = currentGridCopy;
+        for (var row = 0; row < grid.length; row++) {
+            for (var col = 0; col < grid[row].length; col++) {
+                grid[row][col] = nextGenGrid[row][col];
+                nextGenGrid[row][col] = 0;
+            }
+        }
+    }
+    Match.advanceGeneration = advanceGeneration;
+})(Match || (Match = {}));
 var Options;
 (function (Options) {
     var continueDragWhenMouseLeavesCanvas = true; // ToDo: Load from cookie
@@ -796,11 +923,11 @@ var Placement;
             return;
         if (dragState === 2 && fullGrid[row][col] === 0) {
             fullGrid[row][col] = 2;
-            Renderer.drawP1Grid(fullGrid);
+            R.drawP1Grid(fullGrid);
         }
         if (dragState === 0 && fullGrid[row][col] === 2) {
             fullGrid[row][col] = 0;
-            Renderer.drawP1Grid(fullGrid);
+            R.drawP1Grid(fullGrid);
         }
     }
     Placement.dragHandler = dragHandler;
@@ -816,11 +943,11 @@ var Placement;
         if (lastTouchPosition && (lastTouchPosition.row !== row || lastTouchPosition.col !== col)) {
             if (dragState === 2 && fullGrid[row][col] === 0) {
                 fullGrid[row][col] = 2;
-                Renderer.drawP1Grid(fullGrid);
+                R.drawP1Grid(fullGrid);
             }
             if (dragState === 0 && fullGrid[row][col] === 2) {
                 fullGrid[row][col] = 0;
-                Renderer.drawP1Grid(fullGrid);
+                R.drawP1Grid(fullGrid);
             }
             lastTouchPosition = { row: row, col: col };
         }
@@ -845,8 +972,9 @@ var Placement;
         return calculateP1Cell(x, y);
     }
     function calculateP1Cell(x, y) {
-        var col = Math.floor(x / C.PLACEMENT_GRID_CELL_SIZE);
-        var row = Math.floor(y / C.PLACEMENT_GRID_CELL_SIZE);
+        var placementGridCellSize = Math.min(window.innerWidth, window.innerHeight) / (C.PLACEMENT_GRID_ROWS + 2);
+        var col = Math.floor(x / placementGridCellSize);
+        var row = Math.floor(y / placementGridCellSize);
         if (col >= 0 && col < C.PLACEMENT_GRID_COLS && row >= 0 && row < C.PLACEMENT_GRID_ROWS) {
             return { row: row + 1, col: col + 1 };
         }
@@ -854,7 +982,7 @@ var Placement;
     }
     function toggleCell(row, col, fullGrid) {
         fullGrid[row][col] = fullGrid[row][col] === 0 ? 2 : 0;
-        Renderer.drawP1Grid(fullGrid);
+        R.drawP1Grid(fullGrid);
     }
     function mouseOutWhilePlacingHandler(event) {
         if (!event.relatedTarget || event.relatedTarget === document.documentElement) {
@@ -863,8 +991,8 @@ var Placement;
     }
     Placement.mouseOutWhilePlacingHandler = mouseOutWhilePlacingHandler;
 })(Placement || (Placement = {}));
-var Renderer;
-(function (Renderer) {
+var R;
+(function (R) {
     var canvas = E.getCanvas();
     var ctx = canvas.getContext('2d');
     if (!ctx)
@@ -877,64 +1005,68 @@ var Renderer;
     var dialogMessage = E.getDialogMessage();
     var speed = 1;
     function calcFullGridCellSize() {
-        if (C.FRAME_WIDTH >= C.DESKTOP_BREAKPOINT) {
+        if (window.innerWidth >= C.DESKTOP_BREAKPOINT) {
             D.debugLog('Desktop detected');
-            return Math.min(C.FRAME_WIDTH, C.FRAME_HEIGHT) / (C.FULL_GRID_ROWS + 2);
+            return Math.min(window.innerWidth, window.innerHeight) / (C.FULL_GRID_ROWS + 2);
         }
         else {
             D.debugLog('Mobile detected');
-            return Math.min(C.FRAME_WIDTH, C.FRAME_HEIGHT) / (Math.max(C.FULL_GRID_ROWS, C.FULL_GRID_COLS) + 2);
+            return Math.min(window.innerWidth, window.innerHeight) / (Math.max(C.FULL_GRID_ROWS, C.FULL_GRID_COLS) + 2);
         }
     }
-    Renderer.calcFullGridCellSize = calcFullGridCellSize;
+    R.calcFullGridCellSize = calcFullGridCellSize;
     var fullGridCellSize = calcFullGridCellSize();
     function setSpeed(newSpeed) {
         speed = newSpeed;
     }
-    Renderer.setSpeed = setSpeed;
+    R.setSpeed = setSpeed;
     function getSpeed() {
         return speed;
     }
-    Renderer.getSpeed = getSpeed;
+    R.getSpeed = getSpeed;
     function setDisplay(element, displayValue) {
         if (!element)
             return;
         element.style.display = displayValue;
     }
-    Renderer.setDisplay = setDisplay;
+    R.setDisplay = setDisplay;
     function initializeCanvasForPlacement() {
-        canvas.width = (C.PLACEMENT_GRID_COLS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
-        canvas.height = (C.PLACEMENT_GRID_ROWS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
+        var placementGridCellSize = Math.min(window.innerWidth, window.innerHeight) / (C.PLACEMENT_GRID_ROWS + 2);
+        canvas.width = (C.PLACEMENT_GRID_COLS * Math.min(window.innerWidth, window.innerHeight) / (C.PLACEMENT_GRID_ROWS + 2)) + 1;
+        canvas.height = (C.PLACEMENT_GRID_ROWS * Math.min(window.innerWidth, window.innerHeight) / (C.PLACEMENT_GRID_ROWS + 2)) + 1;
+        canvas.width = (C.PLACEMENT_GRID_COLS * placementGridCellSize) + 1;
+        canvas.height = (C.PLACEMENT_GRID_ROWS * placementGridCellSize) + 1;
         previewCanvas.width = C.PREVIEW_CANVAS_SIZE;
         previewCanvas.height = C.PREVIEW_CANVAS_SIZE;
     }
-    Renderer.initializeCanvasForPlacement = initializeCanvasForPlacement;
+    R.initializeCanvasForPlacement = initializeCanvasForPlacement;
     function drawP1Grid(fullGrid) {
+        var placementGridCellSize = Math.min(window.innerWidth, window.innerHeight) / (C.PLACEMENT_GRID_ROWS + 2);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         for (var row = 1; row <= C.PLACEMENT_GRID_ROWS; row++) {
             for (var col = 1; col <= C.PLACEMENT_GRID_COLS; col++) {
-                var x = (col - 1) * C.PLACEMENT_GRID_CELL_SIZE;
-                var y = (row - 1) * C.PLACEMENT_GRID_CELL_SIZE;
+                var x = (col - 1) * placementGridCellSize;
+                var y = (row - 1) * placementGridCellSize;
                 ctx.strokeStyle = '#CCCCCC';
-                ctx.strokeRect(x, y, C.PLACEMENT_GRID_CELL_SIZE, C.PLACEMENT_GRID_CELL_SIZE);
+                ctx.strokeRect(x, y, placementGridCellSize, placementGridCellSize);
                 if (fullGrid[row][col] === 1) {
                     ctx.fillStyle = '#000000';
-                    ctx.fillRect(x, y, C.PLACEMENT_GRID_CELL_SIZE, C.PLACEMENT_GRID_CELL_SIZE);
+                    ctx.fillRect(x, y, placementGridCellSize, placementGridCellSize);
                 }
                 if (fullGrid[row][col] === 2) {
                     ctx.fillStyle = '#0000FF';
-                    ctx.fillRect(x, y, C.PLACEMENT_GRID_CELL_SIZE, C.PLACEMENT_GRID_CELL_SIZE);
+                    ctx.fillRect(x, y, placementGridCellSize, placementGridCellSize);
                 }
                 if (fullGrid[row][col] === 3) {
                     ctx.fillStyle = '#FF0000';
-                    ctx.fillRect(x, y, C.PLACEMENT_GRID_CELL_SIZE, C.PLACEMENT_GRID_CELL_SIZE);
+                    ctx.fillRect(x, y, placementGridCellSize, placementGridCellSize);
                 }
             }
         }
     }
-    Renderer.drawP1Grid = drawP1Grid;
+    R.drawP1Grid = drawP1Grid;
     function drawP2Preview(fullGrid) {
         pctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         pctx.fillStyle = '#FFFFFF';
@@ -954,7 +1086,7 @@ var Renderer;
             }
         }
     }
-    Renderer.drawP2Preview = drawP2Preview;
+    R.drawP2Preview = drawP2Preview;
     function drawFullGrid(fullGrid) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#FFFFFF';
@@ -980,12 +1112,12 @@ var Renderer;
             }
         }
     }
-    Renderer.drawFullGrid = drawFullGrid;
+    R.drawFullGrid = drawFullGrid;
     function showWarningDialog(message) {
         dialogMessage.innerHTML = message;
         warningDialog.style.display = 'flex';
     }
-    Renderer.showWarningDialog = showWarningDialog;
+    R.showWarningDialog = showWarningDialog;
     function updateSpeed(generation) {
         if (generation === 5) {
             speed = 2;
@@ -1009,17 +1141,18 @@ var Renderer;
             speed = 128;
         }
     }
-    Renderer.updateSpeed = updateSpeed;
+    R.updateSpeed = updateSpeed;
     function dialogOkHandler() {
         setDisplay(warningDialog, 'none');
     }
-    Renderer.dialogOkHandler = dialogOkHandler;
+    R.dialogOkHandler = dialogOkHandler;
     function setCanvasSize(mode) {
         if (!mode)
             throw new Error('mode is falsy: ' + mode);
+        var placementGridCellSize = Math.min(window.innerWidth, window.innerHeight) / (C.PLACEMENT_GRID_ROWS + 2);
         if (mode === 'placement') {
-            canvas.width = (C.PLACEMENT_GRID_COLS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
-            canvas.height = (C.PLACEMENT_GRID_ROWS * C.PLACEMENT_GRID_CELL_SIZE) + 1;
+            canvas.width = (C.PLACEMENT_GRID_COLS * placementGridCellSize) + 1;
+            canvas.height = (C.PLACEMENT_GRID_ROWS * placementGridCellSize) + 1;
         }
         else if (mode === 'full') {
             var fullGridCellSize_1 = calcFullGridCellSize();
@@ -1030,12 +1163,12 @@ var Renderer;
             throw new Error('Unknown mode: ' + mode);
         }
     }
-    Renderer.setCanvasSize = setCanvasSize;
+    R.setCanvasSize = setCanvasSize;
     function clearCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-    Renderer.clearCanvas = clearCanvas;
-})(Renderer || (Renderer = {}));
+    R.clearCanvas = clearCanvas;
+})(R || (R = {}));
 var Subtext;
 (function (Subtext) {
     var subtext = E.getSubtext();
@@ -1144,24 +1277,39 @@ var Themes;
     }
     Themes.loadTemporaryIncrementalStylesheet = loadTemporaryIncrementalStylesheet;
     function seasonIsEaster() {
-        // ToDo: Make the time frame for easter accurate for each year individually
         var now = new Date();
-        var month = now.getMonth();
-        var day = now.getDate();
-        // Easter typically falls somewhere between March 22 and April 25 but varies a lot
-        return (month === 2 && day >= 21) || (month === 3 && day <= 26);
+        var year = now.getFullYear();
+        // Computus algorithm to calculate Easter Sunday
+        var a = year % 19;
+        var b = Math.floor(year / 100);
+        var c = year % 100;
+        var d = Math.floor(b / 4);
+        var e = b % 4;
+        var f = Math.floor((b + 8) / 25);
+        var g = Math.floor((b - f + 1) / 3);
+        var h = (19 * a + b - d - g + 15) % 30;
+        var i = Math.floor(c / 4);
+        var k = c % 4;
+        var l = (32 + 2 * e + 2 * i - h - k) % 7;
+        var m = Math.floor((a + 11 * h + 22 * l) / 451);
+        var month = Math.floor((h + l - 7 * m + 114) / 31) - 1; // 0-based month
+        var day = ((h + l - 7 * m + 114) % 31) + 1;
+        // Easter season: 4 days before and 2 days after Easter Sunday
+        var easterStart = new Date(year, month, day - 4);
+        var easterEnd = new Date(year, month, day + 2);
+        return now >= easterStart && now <= easterEnd;
     }
     function seasonIsHalloween() {
         var now = new Date();
         var month = now.getMonth();
         var day = now.getDate();
-        return month === 9 && day >= 29 || month === 10 && day <= 3;
+        return month === 9 && day >= 29 || month === 10 && day <= 2;
     }
     function seasonIsChristmas() {
         var now = new Date();
         var month = now.getMonth();
         var day = now.getDate();
-        return month === 11 && day >= 20 || month === 0 && day <= 6;
+        return month === 11 && day >= 22 || month === 11 && day <= 27;
     }
 })(Themes || (Themes = {}));
 /// <reference path="./constants.ts" />
@@ -1170,147 +1318,24 @@ var Themes;
 /// <reference path="./file-io.ts" />
 /// <reference path="./grid.ts" />
 /// <reference path="./interaction.ts" />
+/// <reference path="./match.ts" />
 /// <reference path="./options.ts" />
 /// <reference path="./placement.ts" />
-/// <reference path="./render.ts" />
+/// <reference path="./renderer.ts" />
 /// <reference path="./subtext.ts" />
 /// <reference path="./themes.ts" />
 // Sirius GG's "Conway's Game of Life" PVP
 // A 2-player Game of Life Esports implementation
 var fullGrid = Grid.buildFullGrid();
-var initialGrid = Grid.buildFullGrid();
 var lastGenGrids = Grid.buildFullGrids(C.LOOP_CHECK_GENERATIONS);
+var initialGrid = Grid.buildFullGrid();
 var nextGenGrid = Grid.buildFullGrid();
-var sleepTime = C.INITIAL_SLEEP_TIME;
-var endlessRun = true;
-var gameHasEndedManually = false;
-var optionContinueDragWhenMouseLeavesCanvas = true;
-var leftBox = E.getLeftBox();
-var buttonPanelRight = E.getButtonPanelRight();
-var warningDialog = E.getWarningDialog();
-var dialogMessage = E.getDialogMessage();
-var continueButton = E.getContinueButton();
-var newGameButton = E.getNewGameButton();
-function sleepWithRedraw(milliseconds, callback, generation) {
-    var start = Date.now();
-    function checkTime() {
-        var current = Date.now();
-        if (current - start < milliseconds) {
-            Renderer.drawFullGrid(fullGrid);
-            if (generation != undefined) {
-                Subtext.setSubtext('Generation ' + generation + '/' + C.MAX_GENERATIONS + ' (speed: ' + Renderer.getSpeed() + 'x)');
-            }
-            requestAnimationFrame(checkTime);
-        }
-        else {
-            callback();
-        }
-    }
-    checkTime();
-}
-function _continueGame() {
-    if (gameHasEndedManually) {
-        endlessRun = false;
-        return;
-    }
-    sleepWithRedraw(sleepTime, function () {
-        if (!gameHasEndedManually) {
-            Grid.advanceGeneration(fullGrid, nextGenGrid);
-            Renderer.drawFullGrid(fullGrid);
-        }
-        if (endlessRun && !gameHasEndedManually) {
-            _continueGame();
-        }
-    }, undefined);
-}
-function continueGame() {
-    endlessRun = true;
-    Renderer.setDisplay(E.getContinueButton(), 'none');
-    _continueGame();
-}
-function newGamePlacement() {
-    gameHasEndedManually = true;
-    endlessRun = false;
-    setTimeout(function () {
-        Renderer.setDisplay(E.getContinueButton(), 'none');
-        Renderer.setDisplay(E.getNewGameButton(), 'none');
-        for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
-            for (var col = 0; col < C.FULL_GRID_COLS; col++) {
-                fullGrid[row][col] = initialGrid[row][col];
-                nextGenGrid[row][col] = 0;
-            }
-        }
-        for (var i = 0; i < C.LOOP_CHECK_GENERATIONS; i++) {
-            lastGenGrids[i] = Grid.buildFullGrid();
-        }
-        if (C.FRAME_WIDTH < C.DESKTOP_BREAKPOINT) {
-            Renderer.setDisplay(leftBox, 'grid');
-        }
-        else {
-            Renderer.setDisplay(leftBox, 'flex');
-        }
-        Renderer.setDisplay(buttonPanelRight, 'flex');
-        Renderer.setCanvasSize('placement');
-        Renderer.clearCanvas();
-        Renderer.setSpeed(1);
-        sleepTime = C.INITIAL_SLEEP_TIME;
-        Subtext.setSubtext("Sirius GG's Conway's Game of Life PVP");
-        Renderer.drawP1Grid(fullGrid);
-        Renderer.drawP2Preview(fullGrid);
-        Interaction.setupEventListeners();
-    }, sleepTime * 1.1);
-}
-function startRound() {
-    if (!Grid.getP1IsAlive(fullGrid)) {
-        Renderer.showWarningDialog("P1 has an empty grid. Cannot start.");
-        return;
-    }
-    if (!Grid.getP2IsAlive(fullGrid)) {
-        Renderer.showWarningDialog("P2 has an empty grid. Cannot start.");
-        return;
-    }
-    Interaction.unregisterMainMenuEventListeners();
-    gameHasEndedManually = false;
-    Grid.gridCopy(fullGrid, initialGrid);
-    Renderer.setDisplay(leftBox, 'none');
-    Renderer.setDisplay(buttonPanelRight, 'none');
-    Renderer.setCanvasSize('full');
-    Renderer.drawFullGrid(fullGrid);
-    window.scrollTo(0, 0);
-    var generations = 0;
-    function advanceAndCheck() {
-        if (generations < C.MAX_GENERATIONS && !Grid.gameHasEnded(fullGrid, lastGenGrids)) {
-            Renderer.updateSpeed(generations);
-            sleepTime = C.INITIAL_SLEEP_TIME / Renderer.getSpeed();
-            sleepWithRedraw(sleepTime, function () {
-                Grid.advanceGeneration(fullGrid, nextGenGrid);
-                Renderer.drawFullGrid(fullGrid);
-                generations++;
-                if (Grid.gameHasEnded(fullGrid, lastGenGrids) || generations >= C.MAX_GENERATIONS) {
-                    Subtext.showResultInSubtext(fullGrid, generations);
-                    Renderer.setDisplay(continueButton, 'block');
-                    Renderer.setDisplay(newGameButton, 'block');
-                    return;
-                }
-                advanceAndCheck();
-            }, generations);
-        }
-        else {
-            if (generations >= C.MAX_GENERATIONS && !Grid.gameHasEnded(fullGrid, lastGenGrids)) {
-                Subtext.showResultInSubtext(fullGrid, C.MAX_GENERATIONS);
-                Renderer.setDisplay(continueButton, 'block');
-                Renderer.setDisplay(newGameButton, 'block');
-            }
-        }
-    }
-    advanceAndCheck();
-}
-Renderer.setDisplay(E.getNoJs(), 'none');
-Renderer.setDisplay(E.getLoading(), 'flex');
+R.setDisplay(E.getNoJs(), 'none');
+R.setDisplay(E.getLoading(), 'flex');
 Themes.loadTemporaryIncrementalStylesheet('auto'); // ToDo: Activate and set to 'auto' for final release
-Renderer.initializeCanvasForPlacement();
-Renderer.drawP1Grid(fullGrid);
-Renderer.drawP2Preview(fullGrid);
+R.initializeCanvasForPlacement();
+R.drawP1Grid(fullGrid);
+R.drawP2Preview(fullGrid);
 Interaction.setupEventListeners();
-Renderer.setDisplay(E.getLoading(), 'none');
-Renderer.setDisplay(E.getGameContainer(), 'flex');
+R.setDisplay(E.getLoading(), 'none');
+R.setDisplay(E.getGameContainer(), 'flex');
