@@ -1390,7 +1390,7 @@ var Settings;
             Themes.loadTemporaryIncrementalStylesheet('auto');
         }
         if (showBackgroundImage) {
-            E.getBgContainer().style.backgroundImage = 'url("../graphics/bg.png")';
+            E.getBgContainer().style.backgroundImage = 'url("./graphics/bg.png")';
             E.getBackgroundBlurOptionBox().style.display = 'block';
         }
         else {
@@ -1455,7 +1455,7 @@ var Settings;
     function setShowBackgroundImage(show) {
         showBackgroundImage = show;
         if (showBackgroundImage) {
-            E.getBgContainer().style.backgroundImage = 'url("../graphics/bg.png")';
+            E.getBgContainer().style.backgroundImage = 'url("./graphics/bg.png")';
             E.getBackgroundBlurOptionBox().style.display = 'block';
         }
         else {
