@@ -28,8 +28,19 @@ var E;
     var body = document.body;
     var noJs = document.querySelector('#no-js');
     var loading = document.querySelector('#loading');
+    var bgContainer = document.querySelector('#bg-container');
     var gameContainer = document.querySelector('#game-container');
     var leftBox = document.querySelector('#left-box');
+    var playerBox = document.querySelector('#player-box');
+    var playerTilePreview = document.querySelector('#player-tile-preview');
+    var trainingBox = document.querySelector('#training-box');
+    var newsBox = document.querySelector('#news-box');
+    var wisdomBox = document.querySelector('#wisdom-box');
+    var classesBox = document.querySelector('#classes-box');
+    var skillsBox = document.querySelector('#skills-box');
+    var shopBox = document.querySelector('#shop-box');
+    var settingsBox = document.querySelector('#settings-box');
+    var closeSettingsButton = document.querySelector('#close-settings-button');
     var gameAndSubtext = document.querySelector('#game-and-subtext');
     var canvas = document.querySelector('#game-canvas');
     var subtext = document.querySelector('#subtext');
@@ -48,16 +59,47 @@ var E;
     var warningDialog = document.querySelector('#warning-dialog');
     var dialogMessage = document.querySelector('#dialog-message');
     var dialogOkButton = document.querySelector('#dialog-ok-button');
+    var settingsPane = document.querySelector('#settings-pane');
+    var storageMethodSelect = document.querySelector('#storage-method');
+    var disableDrawingToggle = document.querySelector('#disable-drawing-toggle');
+    var seasonalThemesToggle = document.querySelector('#seasonal-themes-toggle');
+    var backgroundToggle = document.querySelector('#background-toggle');
+    var backgroundBlurOptionBox = document.querySelector('#background-blur-option-box');
+    var backgroundBlurSlider = document.querySelector('#background-blur-slider');
+    var lightModeRadio = document.querySelector('#light-mode-radio');
+    var darkModeRadio = document.querySelector('#dark-mode-radio');
     if (!body)
         throw new Error('body not found');
     if (!noJs)
         throw new Error('Element #no-js not found');
     if (!loading)
         throw new Error('Element #loading not found');
+    if (!bgContainer)
+        throw new Error('Element #bg-container not found');
     if (!gameContainer)
         throw new Error('Element #game-container not found');
     if (!leftBox)
         throw new Error('Element #left-box not found');
+    if (!playerBox)
+        throw new Error('Element #player-box not found');
+    if (!playerTilePreview)
+        throw new Error('Element #player-tile-preview not found');
+    if (!trainingBox)
+        throw new Error('Element #training-box not found');
+    if (!newsBox)
+        throw new Error('Element #news-box not found');
+    if (!wisdomBox)
+        throw new Error('Element #wisdom-box not found');
+    if (!classesBox)
+        throw new Error('Element #classes-box not found');
+    if (!skillsBox)
+        throw new Error('Element #skills-box not found');
+    if (!shopBox)
+        throw new Error('Element #shop-box not found');
+    if (!settingsBox)
+        throw new Error('Element #settings-box not found');
+    if (!closeSettingsButton)
+        throw new Error('Element #close-settings-button not found');
     if (!gameAndSubtext)
         throw new Error('Element #game-and-subtext not found');
     if (!canvas)
@@ -94,6 +136,24 @@ var E;
         throw new Error('Element #dialog-message not found');
     if (!dialogOkButton)
         throw new Error('Element #dialog-ok-button not found');
+    if (!settingsPane)
+        throw new Error('Element #settings-pane not found');
+    if (!storageMethodSelect)
+        throw new Error('Element #storage-method not found');
+    if (!disableDrawingToggle)
+        throw new Error('Element #disable-drawing-toggle not found');
+    if (!seasonalThemesToggle)
+        throw new Error('Element #seasonal-themes-toggle not found');
+    if (!backgroundToggle)
+        throw new Error('Element #background-toggle not found');
+    if (!backgroundBlurOptionBox)
+        throw new Error('Element #background-blur-option-box not found');
+    if (!backgroundBlurSlider)
+        throw new Error('Element #background-blur-slider not found');
+    if (!lightModeRadio)
+        throw new Error('Element #light-mode-radio not found');
+    if (!darkModeRadio)
+        throw new Error('Element #dark-mode-radio not found');
     function getBody() {
         return body;
     }
@@ -106,6 +166,10 @@ var E;
         return loading;
     }
     E.getLoading = getLoading;
+    function getBgContainer() {
+        return bgContainer;
+    }
+    E.getBgContainer = getBgContainer;
     function getGameContainer() {
         return gameContainer;
     }
@@ -114,6 +178,46 @@ var E;
         return leftBox;
     }
     E.getLeftBox = getLeftBox;
+    function getPlayerBox() {
+        return playerBox;
+    }
+    E.getPlayerBox = getPlayerBox;
+    function getPlayerTilePreview() {
+        return playerTilePreview;
+    }
+    E.getPlayerTilePreview = getPlayerTilePreview;
+    function getTrainingBox() {
+        return trainingBox;
+    }
+    E.getTrainingBox = getTrainingBox;
+    function getNewsBox() {
+        return newsBox;
+    }
+    E.getNewsBox = getNewsBox;
+    function getWisdomBox() {
+        return wisdomBox;
+    }
+    E.getWisdomBox = getWisdomBox;
+    function getClassesBox() {
+        return classesBox;
+    }
+    E.getClassesBox = getClassesBox;
+    function getSkillsBox() {
+        return skillsBox;
+    }
+    E.getSkillsBox = getSkillsBox;
+    function getShopBox() {
+        return shopBox;
+    }
+    E.getShopBox = getShopBox;
+    function getSettingsBox() {
+        return settingsBox;
+    }
+    E.getSettingsBox = getSettingsBox;
+    function getCloseSettingsButton() {
+        return closeSettingsButton;
+    }
+    E.getCloseSettingsButton = getCloseSettingsButton;
     function getGameAndSubtext() {
         return gameAndSubtext;
     }
@@ -186,6 +290,42 @@ var E;
         return dialogOkButton;
     }
     E.getDialogOkButton = getDialogOkButton;
+    function getSettingsPane() {
+        return settingsPane;
+    }
+    E.getSettingsPane = getSettingsPane;
+    function getStorageMethodSelect() {
+        return storageMethodSelect;
+    }
+    E.getStorageMethodSelect = getStorageMethodSelect;
+    function getDisableDrawingToggle() {
+        return disableDrawingToggle;
+    }
+    E.getDisableDrawingToggle = getDisableDrawingToggle;
+    function getSeasonalThemesToggle() {
+        return seasonalThemesToggle;
+    }
+    E.getSeasonalThemesToggle = getSeasonalThemesToggle;
+    function getBackgroundToggle() {
+        return backgroundToggle;
+    }
+    E.getBackgroundToggle = getBackgroundToggle;
+    function getBackgroundBlurOptionBox() {
+        return backgroundBlurOptionBox;
+    }
+    E.getBackgroundBlurOptionBox = getBackgroundBlurOptionBox;
+    function getBackgroundBlurSlider() {
+        return backgroundBlurSlider;
+    }
+    E.getBackgroundBlurSlider = getBackgroundBlurSlider;
+    function getLightModeRadio() {
+        return lightModeRadio;
+    }
+    E.getLightModeRadio = getLightModeRadio;
+    function getDarkModeRadio() {
+        return darkModeRadio;
+    }
+    E.getDarkModeRadio = getDarkModeRadio;
 })(E || (E = {}));
 var FileIO;
 (function (FileIO) {
@@ -202,7 +342,7 @@ var FileIO;
     }
     FileIO.download = download;
     function downloadConfiguration(fullGrid) {
-        var configurationString = Grid.exportP1Grid(fullGrid);
+        var configurationString = Grid.exportP1Grid();
         download('grid' + C.FILE_EXTENSION, configurationString); // ToDo: Derive file name from configuration name
     }
     FileIO.downloadConfiguration = downloadConfiguration;
@@ -287,10 +427,10 @@ var FileIO;
                     Grid.logGrid(fullGrid);
                 }
                 if (mode === 0) {
-                    R.drawP1Grid(fullGrid);
+                    R.drawP1Grid();
                 }
                 else {
-                    R.drawP2Preview(fullGrid);
+                    R.drawP2Preview();
                 }
             };
             reader.onerror = function (e) {
@@ -306,9 +446,20 @@ var FileIO;
 })(FileIO || (FileIO = {}));
 var Grid;
 (function (Grid) {
-    function exportP1Grid(fullGrid) {
+    var fullGrid = buildFullGrid();
+    function getFullGrid() {
+        return fullGrid;
+    }
+    Grid.getFullGrid = getFullGrid;
+    function exportP1Grid() {
         var configurationName = 'configuration'; // ToDo: Show dialog to user and let him enter a custom configuration name
-        var gridString = 'v:' + C.SAVE_FILE_VERSION + ';' + configurationName + ';cols:' + C.PLACEMENT_GRID_COLS + ',rows:' + C.PLACEMENT_GRID_ROWS + ';';
+        var gridString = '';
+        gridString += 'v:' + C.SAVE_FILE_VERSION;
+        gridString += ';';
+        gridString += configurationName;
+        gridString += ';';
+        gridString += 'cols:' + C.PLACEMENT_GRID_COLS + ',rows:' + C.PLACEMENT_GRID_ROWS;
+        gridString += ';';
         for (var row = 1; row <= C.PLACEMENT_GRID_ROWS; row++) {
             for (var col = 1; col <= C.PLACEMENT_GRID_COLS; col++) {
                 gridString += '' + fullGrid[row][col];
@@ -320,12 +471,12 @@ var Grid;
         return gridString;
     }
     Grid.exportP1Grid = exportP1Grid;
-    function translateP1GridToP2Grid(grid) {
+    function translateP1GridToP2Grid(p1Grid) {
         var p2Grid = [];
         for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
             p2Grid[row] = [];
             for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
-                if (grid[row][C.PLACEMENT_GRID_COLS - col - 1] === 2)
+                if (p1Grid[row][C.PLACEMENT_GRID_COLS - col - 1] === 2)
                     p2Grid[row][col] = 3;
                 else
                     p2Grid[row][col] = 0;
@@ -334,10 +485,6 @@ var Grid;
         return p2Grid;
     }
     Grid.translateP1GridToP2Grid = translateP1GridToP2Grid;
-    function isStableConfiguration(fullGrid, lastGenGrids) {
-        return !gridIsEmpty(fullGrid) && !gridIsEmpty(lastGenGrids[0]) && gridEquals(fullGrid, lastGenGrids[0]);
-    }
-    Grid.isStableConfiguration = isStableConfiguration;
     function buildFullGrid() {
         var fullGrid = [];
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
@@ -349,9 +496,9 @@ var Grid;
         return fullGrid;
     }
     Grid.buildFullGrid = buildFullGrid;
-    function buildFullGrids(amount) {
+    function buildFullGrids() {
         var grids = [];
-        for (var loopCount = 0; loopCount < amount; loopCount++) {
+        for (var loopCount = 0; loopCount < C.LOOP_CHECK_GENERATIONS; loopCount++) {
             grids.push(buildFullGrid());
         }
         return grids;
@@ -371,7 +518,7 @@ var Grid;
                 }
             }
         }
-        R.drawP1Grid(fullGrid);
+        R.drawP1Grid();
     }
     Grid.generateRandomP1Grid = generateRandomP1Grid;
     function generateRandomP2Grid() {
@@ -388,7 +535,7 @@ var Grid;
                 }
             }
         }
-        R.drawP2Preview(fullGrid);
+        R.drawP2Preview();
     }
     Grid.generateRandomP2Grid = generateRandomP2Grid;
     function clearGrid() {
@@ -397,10 +544,10 @@ var Grid;
                 fullGrid[row][col] = 0;
             }
         }
-        R.drawP1Grid(fullGrid);
+        R.drawP1Grid();
     }
     Grid.clearGrid = clearGrid;
-    function mirrorP1Grid(fullGrid) {
+    function mirrorP1Grid() {
         var p1Grid = [];
         for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
             p1Grid[row] = [];
@@ -408,21 +555,20 @@ var Grid;
                 p1Grid[row][col] = fullGrid[row + 1][col + 1];
             }
         }
-        var p2Grid = Grid.translateP1GridToP2Grid(p1Grid);
+        var p2Grid = translateP1GridToP2Grid(p1Grid);
         for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
             for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
                 fullGrid[row + 1][C.PLACEMENT_GRID_COLS + col + 2] = p2Grid[row][col];
             }
         }
-        R.drawP2Preview(fullGrid);
+        R.drawP2Preview();
     }
     Grid.mirrorP1Grid = mirrorP1Grid;
     function mirrorP1GridHandler() {
-        // ToDo: Load fullGrid 4 real instead of relying that it is in the namespace (for multiple-game-sessions-simultaneosly-update / server-update)
-        Grid.mirrorP1Grid(fullGrid);
+        mirrorP1Grid();
     }
     Grid.mirrorP1GridHandler = mirrorP1GridHandler;
-    function getP1IsAlive(fullGrid) {
+    function getP1IsAlive() {
         var p1Alive = false;
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
@@ -433,7 +579,7 @@ var Grid;
         return p1Alive;
     }
     Grid.getP1IsAlive = getP1IsAlive;
-    function getP2IsAlive(fullGrid) {
+    function getP2IsAlive() {
         var p2Alive = false;
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
@@ -464,7 +610,7 @@ var Grid;
         return true;
     }
     Grid.gridIsEmpty = gridIsEmpty;
-    function countAliveP1(fullGrid) {
+    function countAliveP1() {
         var counter = 0;
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
@@ -476,7 +622,7 @@ var Grid;
         return counter;
     }
     Grid.countAliveP1 = countAliveP1;
-    function countAliveP2(fullGrid) {
+    function countAliveP2() {
         var counter = 0;
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
@@ -488,12 +634,12 @@ var Grid;
         return counter;
     }
     Grid.countAliveP2 = countAliveP2;
-    function gameHasEnded(fullGrid, lastGenGrids) {
-        if (!Grid.getP1IsAlive(fullGrid) || !Grid.getP2IsAlive(fullGrid)) {
+    function gameHasEnded(lastGenGrids) {
+        if (!getP1IsAlive() || !getP2IsAlive()) {
             return true;
         }
         for (var genCount = 0; genCount < C.LOOP_CHECK_GENERATIONS; genCount++) {
-            if (Grid.gridEquals(fullGrid, lastGenGrids[genCount])) {
+            if (gridEquals(fullGrid, lastGenGrids[genCount])) {
                 return true;
             }
         }
@@ -582,8 +728,9 @@ var Grid;
         return y;
     }
     function gridCopy(fromGrid, toGrid) {
-        if (!fromGrid || !toGrid || !fromGrid[0] || !toGrid[0] || fromGrid.length != toGrid.length || fromGrid[0].length != toGrid[0].length)
+        if (!fromGrid || !toGrid || !fromGrid[0] || !toGrid[0] || fromGrid.length != toGrid.length || fromGrid[0].length != toGrid[0].length) {
             throw new Error('fromGrid and toGrid must bo initialized and have the same dimensions');
+        }
         for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
             for (var col = 0; col < C.FULL_GRID_COLS; col++) {
                 toGrid[row][col] = fromGrid[row][col];
@@ -605,10 +752,9 @@ var Grid;
 var Interaction;
 (function (Interaction) {
     var canvas = E.getCanvas();
-    var body = E.getBody();
     function setupEventListeners() {
         // build the canvas handler functions
-        Placement.setupHandlers(fullGrid);
+        Placement.setupHandlers(Grid.getFullGrid());
         // validate functions from other namespaces exist
         if (!Placement.canvasMouseDownHandler)
             return;
@@ -629,10 +775,10 @@ var Interaction;
         canvas.addEventListener('mousedown', Placement.canvasMouseDownHandler);
         canvas.addEventListener('mousemove', Placement.canvasMouseMoveHandler);
         canvas.addEventListener('mouseup', Placement.endDrag);
-        if (!Options.getContinueDragWhenMouseLeavesCanvas()) {
+        if (!Settings.getContinueDragWhenMouseLeavesCanvas()) {
             canvas.addEventListener('mouseleave', Placement.endDrag);
         }
-        body.addEventListener('mouseup', Placement.endDrag);
+        E.getBody().addEventListener('mouseup', Placement.endDrag);
         document.addEventListener('mouseout', Placement.mouseOutWhilePlacingHandler);
         // touch placement
         canvas.addEventListener('touchstart', Placement.canvasTouchStartHandler);
@@ -651,6 +797,39 @@ var Interaction;
         E.getPlayButton().addEventListener('click', Match.startRound);
         E.getDialogOkButton().addEventListener('click', R.dialogOkHandler);
         E.getMirrorP1GridButton().addEventListener('click', Grid.mirrorP1GridHandler);
+        E.getSettingsBox().addEventListener('click', R.showSettingsPane);
+        E.getCloseSettingsButton().addEventListener('click', R.hideSettingsPane);
+        // settings-pane listeners
+        E.getStorageMethodSelect().addEventListener('change', function (event) {
+            var select = event.target;
+            Settings.setStorageType(select.value);
+        });
+        E.getDisableDrawingToggle().addEventListener('change', function (event) {
+            var checkbox = event.target;
+            Settings.setContinueDragWhenMouseLeavesCanvas(!checkbox.checked);
+        });
+        E.getSeasonalThemesToggle().addEventListener('change', function (event) {
+            var checkbox = event.target;
+            Settings.setHideSeasonalThemes(checkbox.checked);
+        });
+        E.getBackgroundToggle().addEventListener('change', function (event) {
+            var checkbox = event.target;
+            Settings.setShowBackgroundImage(checkbox.checked);
+        });
+        E.getBackgroundBlurSlider().addEventListener('input', function (event) {
+            var slider = event.target;
+            Settings.setBackgroundBlur(Number(slider.value));
+        });
+        E.getLightModeRadio().addEventListener('change', function (event) {
+            if (event.target.checked) {
+                Settings.setColorMode(Settings.ColorMode.Light);
+            }
+        });
+        E.getDarkModeRadio().addEventListener('change', function (event) {
+            if (event.target.checked) {
+                Settings.setColorMode(Settings.ColorMode.Dark);
+            }
+        });
     }
     Interaction.setupEventListeners = setupEventListeners;
     function unregisterMainMenuEventListeners() {
@@ -684,16 +863,18 @@ var Interaction;
         E.getPlayButton().removeEventListener('click', Match.startRound);
         E.getDialogOkButton().removeEventListener('click', R.dialogOkHandler);
         E.getMirrorP1GridButton().removeEventListener('click', Grid.mirrorP1GridHandler);
+        E.getSettingsBox().removeEventListener('click', R.showSettingsPane);
+        E.getCloseSettingsButton().removeEventListener('click', R.hideSettingsPane);
     }
     Interaction.unregisterMainMenuEventListeners = unregisterMainMenuEventListeners;
     function exportGridHandler() {
-        FileIO.downloadConfiguration(fullGrid);
+        FileIO.downloadConfiguration(Grid.getFullGrid());
     }
     function importP1GridHandler(event) {
-        FileIO.importFile(event, 0, fullGrid);
+        FileIO.importFile(event, 0, Grid.getFullGrid());
     }
     function importP2GridHandler(event) {
-        FileIO.importFile(event, 1, fullGrid);
+        FileIO.importFile(event, 1, Grid.getFullGrid());
     }
 })(Interaction || (Interaction = {}));
 var Match;
@@ -702,6 +883,9 @@ var Match;
     var buttonPanelRight = E.getButtonPanelRight();
     var continueButton = E.getContinueButton();
     var newGameButton = E.getNewGameButton();
+    var lastGenGrids = Grid.buildFullGrids();
+    var initialGrid = Grid.buildFullGrid();
+    var nextGenGrid = Grid.buildFullGrid();
     var sleepTime = C.INITIAL_SLEEP_TIME;
     var endlessRun = true;
     var gameHasEndedManually = false;
@@ -710,7 +894,7 @@ var Match;
         function checkTime() {
             var current = Date.now();
             if (current - start < milliseconds) {
-                R.drawFullGrid(fullGrid);
+                R.drawFullGrid(Grid.getFullGrid());
                 if (generation != undefined) {
                     Subtext.setSubtext('Generation ' + generation + '/' + C.MAX_GENERATIONS + ' (speed: ' + R.getSpeed() + 'x)');
                 }
@@ -729,8 +913,8 @@ var Match;
         }
         sleepWithRedraw(sleepTime, function () {
             if (!gameHasEndedManually) {
-                advanceGeneration(fullGrid, nextGenGrid);
-                R.drawFullGrid(fullGrid);
+                advanceGeneration(Grid.getFullGrid(), nextGenGrid);
+                R.drawFullGrid(Grid.getFullGrid());
             }
             if (endlessRun && !gameHasEndedManually) {
                 _continueGame();
@@ -751,7 +935,7 @@ var Match;
             R.setDisplay(E.getNewGameButton(), 'none');
             for (var row = 0; row < C.FULL_GRID_ROWS; row++) {
                 for (var col = 0; col < C.FULL_GRID_COLS; col++) {
-                    fullGrid[row][col] = initialGrid[row][col];
+                    Grid.getFullGrid()[row][col] = initialGrid[row][col];
                     nextGenGrid[row][col] = 0;
                 }
             }
@@ -770,40 +954,40 @@ var Match;
             R.setSpeed(1);
             sleepTime = C.INITIAL_SLEEP_TIME;
             Subtext.setSubtext("Sirius GG's Conway's Game of Life PVP");
-            R.drawP1Grid(fullGrid);
-            R.drawP2Preview(fullGrid);
+            R.drawP1Grid();
+            R.drawP2Preview();
             Interaction.setupEventListeners();
         }, sleepTime * 1.1);
     }
     Match.newGamePlacement = newGamePlacement;
     function startRound() {
-        if (!Grid.getP1IsAlive(fullGrid)) {
+        if (!Grid.getP1IsAlive()) {
             R.showWarningDialog("P1 has an empty grid. Cannot start.");
             return;
         }
-        if (!Grid.getP2IsAlive(fullGrid)) {
+        if (!Grid.getP2IsAlive()) {
             R.showWarningDialog("P2 has an empty grid. Cannot start.");
             return;
         }
         Interaction.unregisterMainMenuEventListeners();
         gameHasEndedManually = false;
-        Grid.gridCopy(fullGrid, initialGrid);
+        Grid.gridCopy(Grid.getFullGrid(), initialGrid);
         R.setDisplay(leftBox, 'none');
         R.setDisplay(buttonPanelRight, 'none');
         R.setCanvasSize('full');
-        R.drawFullGrid(fullGrid);
+        R.drawFullGrid(Grid.getFullGrid());
         window.scrollTo(0, 0);
         var generations = 0;
         function advanceAndCheck() {
-            if (generations < C.MAX_GENERATIONS && !Grid.gameHasEnded(fullGrid, lastGenGrids)) {
+            if (generations < C.MAX_GENERATIONS && !Grid.gameHasEnded(lastGenGrids)) {
                 R.updateSpeed(generations);
                 sleepTime = C.INITIAL_SLEEP_TIME / R.getSpeed();
                 sleepWithRedraw(sleepTime, function () {
-                    advanceGeneration(fullGrid, nextGenGrid);
-                    R.drawFullGrid(fullGrid);
+                    advanceGeneration(Grid.getFullGrid(), nextGenGrid);
+                    R.drawFullGrid(Grid.getFullGrid());
                     generations++;
-                    if (Grid.gameHasEnded(fullGrid, lastGenGrids) || generations >= C.MAX_GENERATIONS) {
-                        Subtext.showResultInSubtext(fullGrid, generations);
+                    if (Grid.gameHasEnded(lastGenGrids) || generations >= C.MAX_GENERATIONS) {
+                        Subtext.showResultInSubtext(Grid.getFullGrid(), generations, lastGenGrids);
                         R.setDisplay(continueButton, 'block');
                         R.setDisplay(newGameButton, 'block');
                         return;
@@ -812,8 +996,8 @@ var Match;
                 }, generations);
             }
             else {
-                if (generations >= C.MAX_GENERATIONS && !Grid.gameHasEnded(fullGrid, lastGenGrids)) {
-                    Subtext.showResultInSubtext(fullGrid, C.MAX_GENERATIONS);
+                if (generations >= C.MAX_GENERATIONS && !Grid.gameHasEnded(lastGenGrids)) {
+                    Subtext.showResultInSubtext(Grid.getFullGrid(), C.MAX_GENERATIONS, lastGenGrids);
                     R.setDisplay(continueButton, 'block');
                     R.setDisplay(newGameButton, 'block');
                 }
@@ -861,19 +1045,6 @@ var Match;
     }
     Match.advanceGeneration = advanceGeneration;
 })(Match || (Match = {}));
-var Options;
-(function (Options) {
-    var continueDragWhenMouseLeavesCanvas = true; // ToDo: Load from cookie
-    function getContinueDragWhenMouseLeavesCanvas() {
-        return continueDragWhenMouseLeavesCanvas;
-    }
-    Options.getContinueDragWhenMouseLeavesCanvas = getContinueDragWhenMouseLeavesCanvas;
-    function setContinueDragWhenMouseLeavesCanvas(continueDragWhenMouseLeavesCanvas) {
-        this.continueDragWhenMouseLeavesCanvas = continueDragWhenMouseLeavesCanvas;
-        // ToDo: Save config to cookie
-    }
-    Options.setContinueDragWhenMouseLeavesCanvas = setContinueDragWhenMouseLeavesCanvas;
-})(Options || (Options = {}));
 var Placement;
 (function (Placement) {
     var isDragging = false;
@@ -923,11 +1094,11 @@ var Placement;
             return;
         if (dragState === 2 && fullGrid[row][col] === 0) {
             fullGrid[row][col] = 2;
-            R.drawP1Grid(fullGrid);
+            R.drawP1Grid();
         }
         if (dragState === 0 && fullGrid[row][col] === 2) {
             fullGrid[row][col] = 0;
-            R.drawP1Grid(fullGrid);
+            R.drawP1Grid();
         }
     }
     Placement.dragHandler = dragHandler;
@@ -943,11 +1114,11 @@ var Placement;
         if (lastTouchPosition && (lastTouchPosition.row !== row || lastTouchPosition.col !== col)) {
             if (dragState === 2 && fullGrid[row][col] === 0) {
                 fullGrid[row][col] = 2;
-                R.drawP1Grid(fullGrid);
+                R.drawP1Grid();
             }
             if (dragState === 0 && fullGrid[row][col] === 2) {
                 fullGrid[row][col] = 0;
-                R.drawP1Grid(fullGrid);
+                R.drawP1Grid();
             }
             lastTouchPosition = { row: row, col: col };
         }
@@ -982,7 +1153,7 @@ var Placement;
     }
     function toggleCell(row, col, fullGrid) {
         fullGrid[row][col] = fullGrid[row][col] === 0 ? 2 : 0;
-        R.drawP1Grid(fullGrid);
+        R.drawP1Grid();
     }
     function mouseOutWhilePlacingHandler(event) {
         if (!event.relatedTarget || event.relatedTarget === document.documentElement) {
@@ -1003,6 +1174,7 @@ var R;
         throw new Error("previewCanvas.getContext('2d)' is null");
     var warningDialog = E.getWarningDialog();
     var dialogMessage = E.getDialogMessage();
+    var settingsPane = E.getSettingsPane();
     var speed = 1;
     function calcFullGridCellSize() {
         if (window.innerWidth >= C.DESKTOP_BREAKPOINT) {
@@ -1040,7 +1212,8 @@ var R;
         previewCanvas.height = C.PREVIEW_CANVAS_SIZE;
     }
     R.initializeCanvasForPlacement = initializeCanvasForPlacement;
-    function drawP1Grid(fullGrid) {
+    function drawP1Grid() {
+        var fullGrid = Grid.getFullGrid();
         var placementGridCellSize = Math.min(window.innerWidth, window.innerHeight) / (C.PLACEMENT_GRID_ROWS + 2);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = '#FFFFFF';
@@ -1067,7 +1240,8 @@ var R;
         }
     }
     R.drawP1Grid = drawP1Grid;
-    function drawP2Preview(fullGrid) {
+    function drawP2Preview() {
+        var fullGrid = Grid.getFullGrid();
         pctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
         pctx.fillStyle = '#FFFFFF';
         pctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
@@ -1168,7 +1342,272 @@ var R;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
     R.clearCanvas = clearCanvas;
+    function showSettingsPane() {
+        settingsPane.style.display = 'flex';
+    }
+    R.showSettingsPane = showSettingsPane;
+    function hideSettingsPane() {
+        settingsPane.style.display = 'none';
+    }
+    R.hideSettingsPane = hideSettingsPane;
 })(R || (R = {}));
+var Settings;
+(function (Settings) {
+    // Storage type enum
+    var StorageType;
+    (function (StorageType) {
+        StorageType["Cookie"] = "cookie";
+        StorageType["LocalStorage"] = "localStorage";
+    })(StorageType = Settings.StorageType || (Settings.StorageType = {}));
+    // Color mode enum
+    var ColorMode;
+    (function (ColorMode) {
+        ColorMode["Light"] = "light";
+        ColorMode["Dark"] = "dark";
+    })(ColorMode = Settings.ColorMode || (Settings.ColorMode = {}));
+    var storageType = loadStorageTypePreference();
+    var continueDragWhenMouseLeavesCanvas = loadContinueDragWhenMouseLeavesCanvasPreference();
+    var hideSeasonalThemes = loadHideSeasonalThemesPreference();
+    var showBackgroundImage = loadShowBackgroundImagePreference();
+    var backgroundBlur = loadBackgroundBlurPreference();
+    var colorMode = loadColorModePreference();
+    function synchronizeSettingsUI() {
+        E.getStorageMethodSelect().value = getStorageType();
+        E.getDisableDrawingToggle().checked = !getContinueDragWhenMouseLeavesCanvas();
+        E.getSeasonalThemesToggle().checked = getHideSeasonalThemes();
+        E.getBackgroundToggle().checked = getShowBackgroundImage();
+        E.getBackgroundBlurSlider().value = getBackgroundBlur().toString();
+        if (getColorMode() === ColorMode.Dark) {
+            E.getDarkModeRadio().checked = true;
+        }
+        else {
+            E.getLightModeRadio().checked = true;
+        }
+    }
+    Settings.synchronizeSettingsUI = synchronizeSettingsUI;
+    function enforceAllSettings() {
+        if (!hideSeasonalThemes) {
+            Themes.loadTemporaryIncrementalStylesheet('auto');
+        }
+        if (showBackgroundImage) {
+            E.getBgContainer().style.backgroundImage = 'url("../graphics/bg.png")';
+            E.getBackgroundBlurOptionBox().style.display = 'block';
+        }
+        else {
+            E.getBgContainer().style.backgroundImage = 'none';
+            E.getBackgroundBlurOptionBox().style.display = 'none';
+        }
+        E.getBgContainer().style.filter = 'blur(' + backgroundBlur + 'px)';
+    }
+    Settings.enforceAllSettings = enforceAllSettings;
+    // Public getter for the drag option
+    function getContinueDragWhenMouseLeavesCanvas() {
+        return continueDragWhenMouseLeavesCanvas;
+    }
+    Settings.getContinueDragWhenMouseLeavesCanvas = getContinueDragWhenMouseLeavesCanvas;
+    // Public setter for the drag option
+    function setContinueDragWhenMouseLeavesCanvas(continueDrag) {
+        continueDragWhenMouseLeavesCanvas = continueDrag;
+        saveContinueDragOption(continueDrag);
+    }
+    Settings.setContinueDragWhenMouseLeavesCanvas = setContinueDragWhenMouseLeavesCanvas;
+    // Public getter for the storage type
+    function getStorageType() {
+        return storageType;
+    }
+    Settings.getStorageType = getStorageType;
+    // Public setter for the storage type
+    function setStorageType(type) {
+        // Save the current option with the new storage type
+        storageType = type;
+        saveStorageTypePreference(type);
+        // Re-save current values with the new storage type
+        saveContinueDragOption(continueDragWhenMouseLeavesCanvas);
+        saveHideSeasonalThemesPreference(hideSeasonalThemes);
+        saveShowBackgroundImagePreference(showBackgroundImage);
+        saveBackgroundBlurPreference(backgroundBlur);
+        saveColorModePreference(colorMode);
+    }
+    Settings.setStorageType = setStorageType;
+    // Public getter for hideSeasonalThemes
+    function getHideSeasonalThemes() {
+        return hideSeasonalThemes;
+    }
+    Settings.getHideSeasonalThemes = getHideSeasonalThemes;
+    // Public setter for hideSeasonalThemes
+    function setHideSeasonalThemes(hide) {
+        hideSeasonalThemes = hide;
+        if (hideSeasonalThemes) {
+            Themes.removeAllIncrementalStylesheets();
+        }
+        else {
+            Themes.loadTemporaryIncrementalStylesheet('auto');
+        }
+        saveHideSeasonalThemesPreference(hideSeasonalThemes);
+    }
+    Settings.setHideSeasonalThemes = setHideSeasonalThemes;
+    // Public getter for showBackgroundImage
+    function getShowBackgroundImage() {
+        return showBackgroundImage;
+    }
+    Settings.getShowBackgroundImage = getShowBackgroundImage;
+    // Public setter for showBackgroundImage
+    function setShowBackgroundImage(show) {
+        showBackgroundImage = show;
+        if (showBackgroundImage) {
+            E.getBgContainer().style.backgroundImage = 'url("../graphics/bg.png")';
+            E.getBackgroundBlurOptionBox().style.display = 'block';
+        }
+        else {
+            E.getBgContainer().style.backgroundImage = 'none';
+            E.getBackgroundBlurOptionBox().style.display = 'none';
+        }
+        saveShowBackgroundImagePreference(showBackgroundImage);
+    }
+    Settings.setShowBackgroundImage = setShowBackgroundImage;
+    // Public getter for backgroundBlur
+    function getBackgroundBlur() {
+        return backgroundBlur;
+    }
+    Settings.getBackgroundBlur = getBackgroundBlur;
+    // Public setter for backgroundBlur
+    function setBackgroundBlur(blur) {
+        backgroundBlur = blur;
+        E.getBgContainer().style.filter = 'blur(' + backgroundBlur + 'px)';
+        saveBackgroundBlurPreference(backgroundBlur);
+    }
+    Settings.setBackgroundBlur = setBackgroundBlur;
+    // Public getter for colorMode
+    function getColorMode() {
+        return colorMode;
+    }
+    Settings.getColorMode = getColorMode;
+    // Public setter for colorMode
+    function setColorMode(mode) {
+        colorMode = mode;
+        saveColorModePreference(mode);
+    }
+    Settings.setColorMode = setColorMode;
+    // Storage type preference is always saved in localStorage for persistence
+    function loadStorageTypePreference() {
+        var savedType = localStorage.getItem('storageType');
+        return savedType === StorageType.Cookie ? StorageType.Cookie : StorageType.LocalStorage; // Default to LocalStorage
+    }
+    function saveStorageTypePreference(type) {
+        localStorage.setItem('storageType', type);
+    }
+    function parseBoolean(value, defaultValue) {
+        if (value === null)
+            return defaultValue;
+        return value === 'true';
+    }
+    function parseNumber(value, defaultValue) {
+        if (value === null) {
+            return defaultValue;
+        }
+        var parsed = Number(value);
+        return isNaN(parsed) ? defaultValue : parsed;
+    }
+    function loadContinueDragWhenMouseLeavesCanvasPreference() {
+        var value = storageType === StorageType.Cookie
+            ? loadFromCookie('continueDragWhenMouseLeavesCanvas')
+            : loadFromLocalStorage('continueDragWhenMouseLeavesCanvas');
+        return parseBoolean(value, true); // Default to true
+    }
+    function loadHideSeasonalThemesPreference() {
+        var value = storageType === StorageType.Cookie
+            ? loadFromCookie('hideSeasonalThemes')
+            : loadFromLocalStorage('hideSeasonalThemes');
+        return parseBoolean(value, false); // Default to false
+    }
+    function loadShowBackgroundImagePreference() {
+        var value = storageType === StorageType.Cookie
+            ? loadFromCookie('showBackgroundImage')
+            : loadFromLocalStorage('showBackgroundImage');
+        return parseBoolean(value, true); // Default to true
+    }
+    function loadBackgroundBlurPreference() {
+        var value = storageType === StorageType.Cookie
+            ? loadFromCookie('backgroundBlur')
+            : loadFromLocalStorage('backgroundBlur');
+        return parseNumber(value, 2); // Default to 2
+    }
+    function loadColorModePreference() {
+        var value = storageType === StorageType.Cookie
+            ? loadFromCookie('colorMode')
+            : loadFromLocalStorage('colorMode');
+        return value === ColorMode.Dark ? ColorMode.Dark : ColorMode.Light; // Default to Light
+    }
+    function saveContinueDragOption(value) {
+        var stringValue = String(value);
+        if (storageType === StorageType.Cookie) {
+            saveToCookie('continueDragWhenMouseLeavesCanvas', stringValue);
+        }
+        else {
+            saveToLocalStorage('continueDragWhenMouseLeavesCanvas', stringValue);
+        }
+    }
+    function saveHideSeasonalThemesPreference(value) {
+        var stringValue = String(value);
+        if (storageType === StorageType.Cookie) {
+            saveToCookie('hideSeasonalThemes', stringValue);
+        }
+        else {
+            saveToLocalStorage('hideSeasonalThemes', stringValue);
+        }
+    }
+    function saveShowBackgroundImagePreference(value) {
+        var stringValue = String(value);
+        if (storageType === StorageType.Cookie) {
+            saveToCookie('showBackgroundImage', stringValue);
+        }
+        else {
+            saveToLocalStorage('showBackgroundImage', stringValue);
+        }
+    }
+    function saveBackgroundBlurPreference(value) {
+        var stringValue = String(value);
+        if (storageType === StorageType.Cookie) {
+            saveToCookie('backgroundBlur', stringValue);
+        }
+        else {
+            saveToLocalStorage('backgroundBlur', stringValue);
+        }
+    }
+    function saveColorModePreference(value) {
+        if (storageType === StorageType.Cookie) {
+            saveToCookie('colorMode', value);
+        }
+        else {
+            saveToLocalStorage('colorMode', value);
+        }
+    }
+    // Helper function to load from cookie
+    function loadFromCookie(key) {
+        var cookies = document.cookie.split('; ');
+        for (var _i = 0, cookies_1 = cookies; _i < cookies_1.length; _i++) {
+            var cookie = cookies_1[_i];
+            var _a = cookie.split('='), cookieKey = _a[0], cookieValue = _a[1];
+            if (cookieKey === key) {
+                return decodeURIComponent(cookieValue);
+            }
+        }
+        return null;
+    }
+    // Helper function to save to cookie
+    function saveToCookie(key, value) {
+        var encodedValue = encodeURIComponent(value);
+        document.cookie = "".concat(key, "=").concat(encodedValue, "; path=/; max-age=2147483647");
+    }
+    // Helper function to load from localStorage
+    function loadFromLocalStorage(key) {
+        return localStorage.getItem(key);
+    }
+    // Helper function to save to localStorage
+    function saveToLocalStorage(key, value) {
+        localStorage.setItem(key, value);
+    }
+})(Settings || (Settings = {}));
 var Subtext;
 (function (Subtext) {
     var subtext = E.getSubtext();
@@ -1176,11 +1615,11 @@ var Subtext;
         subtext.innerHTML = message;
     }
     Subtext.setSubtext = setSubtext;
-    function showResultInSubtext(fullGrid, generations) {
-        var p1IsAlive = Grid.getP1IsAlive(fullGrid);
-        var p2IsAlive = Grid.getP2IsAlive(fullGrid);
-        var p1AliveAmount = Grid.countAliveP1(fullGrid);
-        var p2AliveAmount = Grid.countAliveP2(fullGrid);
+    function showResultInSubtext(fullGrid, generations, lastGenGrids) {
+        var p1IsAlive = Grid.getP1IsAlive();
+        var p2IsAlive = Grid.getP2IsAlive();
+        var p1AliveAmount = Grid.countAliveP1();
+        var p2AliveAmount = Grid.countAliveP2();
         var isStable = !Grid.gridIsEmpty(fullGrid) && !Grid.gridIsEmpty(lastGenGrids[0]) && Grid.gridEquals(fullGrid, lastGenGrids[0]);
         if (p1IsAlive && p2IsAlive && generations === C.MAX_GENERATIONS) {
             if (p1AliveAmount === p2AliveAmount) {
@@ -1265,6 +1704,10 @@ var Themes;
                 D.debugLog('Season is christmas.');
                 sheetLink.href = 'css/christmas.css';
             }
+            else if (seasonIsNewYear()) {
+                D.debugLog('Season is new year.');
+                sheetLink.href = 'css/new-year.css';
+            }
             else {
                 D.debugLog('No theme found for current season. Using default theme only.');
                 return;
@@ -1276,6 +1719,27 @@ var Themes;
         document.head.appendChild(sheetLink);
     }
     Themes.loadTemporaryIncrementalStylesheet = loadTemporaryIncrementalStylesheet;
+    function removeAllIncrementalStylesheets() {
+        var incrementalStylesheets = [
+            'css/easter.css',
+            'css/halloween.css',
+            'css/christmas.css',
+            'css/new-year.css'
+        ];
+        var links = document.querySelectorAll('link[rel="stylesheet"]');
+        links.forEach(function (link) {
+            var _a;
+            var href = link.href;
+            var isIncremental = incrementalStylesheets.some(function (stylesheet) {
+                var index = href.lastIndexOf(stylesheet);
+                return index !== -1 && index === href.length - stylesheet.length;
+            });
+            if (isIncremental) {
+                (_a = link.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(link);
+            }
+        });
+    }
+    Themes.removeAllIncrementalStylesheets = removeAllIncrementalStylesheets;
     function seasonIsEaster() {
         var now = new Date();
         var year = now.getFullYear();
@@ -1311,6 +1775,16 @@ var Themes;
         var day = now.getDate();
         return month === 11 && day >= 22 || month === 11 && day <= 27;
     }
+    function seasonIsNewYear() {
+        var now = new Date();
+        var month = now.getMonth();
+        var day = now.getDate();
+        return (month === 11 && day >= 29) || (month === 0 && day <= 2);
+    }
+    function isSpecialSeason() {
+        return seasonIsEaster() || seasonIsHalloween() || seasonIsChristmas() || seasonIsNewYear();
+    }
+    Themes.isSpecialSeason = isSpecialSeason;
 })(Themes || (Themes = {}));
 /// <reference path="./constants.ts" />
 /// <reference path="./debug.ts" />
@@ -1319,23 +1793,30 @@ var Themes;
 /// <reference path="./grid.ts" />
 /// <reference path="./interaction.ts" />
 /// <reference path="./match.ts" />
-/// <reference path="./options.ts" />
 /// <reference path="./placement.ts" />
 /// <reference path="./renderer.ts" />
+/// <reference path="./settings.ts" />
 /// <reference path="./subtext.ts" />
 /// <reference path="./themes.ts" />
 // Sirius GG's "Conway's Game of Life" PVP
 // A 2-player Game of Life Esports implementation
-var fullGrid = Grid.buildFullGrid();
-var lastGenGrids = Grid.buildFullGrids(C.LOOP_CHECK_GENERATIONS);
-var initialGrid = Grid.buildFullGrid();
-var nextGenGrid = Grid.buildFullGrid();
-R.setDisplay(E.getNoJs(), 'none');
-R.setDisplay(E.getLoading(), 'flex');
-Themes.loadTemporaryIncrementalStylesheet('auto'); // ToDo: Activate and set to 'auto' for final release
+// Fetch elements
+var noJs = E.getNoJs(); // The "This game requires Javascript" message
+var loading = E.getLoading(); // The loading screen
+var gameContainer = E.getGameContainer(); // The main game container
+// Hide the "This game requires Javascript" message and show the loading screen
+R.setDisplay(noJs, 'none');
+R.setDisplay(loading, 'flex');
+// Make the settings UI match the saved values and apply the settings
+Settings.synchronizeSettingsUI();
+Settings.enforceAllSettings();
+// Initialize the placement canvas
 R.initializeCanvasForPlacement();
-R.drawP1Grid(fullGrid);
-R.drawP2Preview(fullGrid);
+// Draw the P1 and P2 grids
+R.drawP1Grid();
+R.drawP2Preview();
+// Make elements interactive
 Interaction.setupEventListeners();
-R.setDisplay(E.getLoading(), 'none');
-R.setDisplay(E.getGameContainer(), 'flex');
+// Hide the loading screen and make the game container visible
+R.setDisplay(loading, 'none');
+R.setDisplay(gameContainer, 'flex');

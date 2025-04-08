@@ -27,76 +27,122 @@
   <meta name="robots" content="noindex, nofollow"> <!-- ToDo: Remove in final release -->
 </head>
 
-<body>
+<body oncontextmenu="return false;">
   <div id="bg-container"></div>
   <h1 id="h1-title">Sirius GG's Conway's Game of Life PVP</h1>
   <h2 id="h2-slogan">Conway's Game of Life, but it is a 2 player PVP esports game.</h2>
-  <div id="no-js"><p>This game requires Javascript to run.</p></div>
-  <div id="loading"><p>Loading...</p></div>
-  <div id="game-container">
+  <div id="no-js">
+    <p>This game requires Javascript to run.</p>
+  </div>
+  <div id="loading">
+    <p>Loading...</p>
+  </div>
+  <div id="game-container" class="unselectable">
     <div id="left-box">
       <div id="player-box">
-        <label id="player-box-label" class="unselectable">Player</label>
+        <label id="player-box-label">Player</label>
         <canvas id="player-tile-preview"></canvas>
       </div>
       <div id="training-box">
-        <label id="training-box-label" class="unselectable">Training</label>
+        <label id="training-box-label">Training</label>
         <img class="left-box-button-icon" src="./graphics/icons/pencil-icon.png" alt="Training">
       </div>
       <div id="news-box">
-        <label id="news-box-label" class="unselectable">News</label>
+        <label id="news-box-label">News</label>
         <img class="left-box-button-icon" src="./graphics/icons/info-icon.png" alt="News">
       </div>
       <div id="wisdom-box">
-        <label id="wisdom-box-label" class="unselectable">Wisdom</label>
+        <label id="wisdom-box-label">Wisdom</label>
         <img class="left-box-button-icon" src="./graphics/icons/graduation-cap-icon.png" alt="Wisdom">
       </div>
       <div id="classes-box">
-        <label id="classes-box-label" class="unselectable">Classes</label>
+        <label id="classes-box-label">Classes</label>
         <img class="left-box-button-icon" src="./graphics/icons/crossed-swords-icon.png" alt="Classes">
       </div>
       <div id="skills-box">
-        <label id="skills-box-label" class="unselectable">Skills</label>
+        <label id="skills-box-label">Skills</label>
         <img class="left-box-button-icon" src="./graphics/icons/taxonomy-icon.png" alt="Skills">
       </div>
       <div id="shop-box">
-        <label id="shop-box-label" class="unselectable">Shop</label>
+        <label id="shop-box-label">Shop</label>
         <img class="left-box-button-icon" src="./graphics/icons/cart-line-icon.png" alt="Shop">
       </div>
-      <div id="options-box">
-        <label id="options-box-label" class="unselectable">Settings</label>
+      <div id="settings-box">
+        <label id="settings-box-label">Settings</label>
         <img class="left-box-button-icon" src="./graphics/icons/setting-black-icon.png" alt="Settings">
       </div>
     </div>
     <div id="game-and-subtext">
       <canvas id="game-canvas"></canvas>
       <div id="bottom-box">
-        <p id="subtext">Sirius GG's Conway's Game of Life PVP</p>
+        <p id="subtext" class="selectable">Sirius GG's Conway's Game of Life PVP</p>
         <button id="continue-button" type="button">Continue simulation</button>
         <button id="new-game-button" type="button">New game</button>
       </div>
     </div>
     <div id="button-panel-right">
-      <label class="unselectable">P1 grid options</label>
-      <button id="clear-button" type="button" class="unselectable">Clear grid</button>
-      <button id="random-p1-grid-button" type="button" class="unselectable">Random configuration</button>
-      <button id="export-button" type="button" class="unselectable">Export configuration</button>
-      <label id="import-p1-button-label" for="import-p1-button" class="looks-like-button unselectable">Import configuration</label>
+      <label>P1 grid options</label>
+      <button id="clear-button" type="button">Clear grid</button>
+      <button id="random-p1-grid-button" type="button">Random configuration</button>
+      <button id="export-button" type="button">Export configuration</button>
+      <label id="import-p1-button-label" for="import-p1-button" class="looks-like-button">Import configuration</label>
       <input id="import-p1-button" type="file" accept=".gol" title="Import a P1 configuration">
-      <label class="unselectable">P2 grid options</label>
-      <button id="random-p2-grid-button" type="button" class="unselectable">Random configuration</button>
-      <label id="import-p2-button-label" for="import-p2-button" class="looks-like-button unselectable">Import configuration</label>
+      <label>P2 grid options</label>
+      <button id="random-p2-grid-button" type="button">Random configuration</button>
+      <label id="import-p2-button-label" for="import-p2-button" class="looks-like-button">Import configuration</label>
       <input id="import-p2-button" type="file" accept=".gol" title="Import a P2 configuration">
-      <button id="mirror-p1-button" type="button" class="unselectable">Mirror P1's configuration</button>
+      <button id="mirror-p1-button" type="button">Mirror P1's configuration</button>
       <canvas id="p2-preview-canvas"></canvas>
-      <label class="unselectable">Menu</label>
-      <button id="play-button" type="button" class="unselectable">Start</button>
+      <label>Menu</label>
+      <button id="play-button" type="button">Start</button>
     </div>
   </div>
   <div id="warning-dialog" class="dialog">
     <div class="dialog-content">
       <p id="dialog-message"></p>
-      <button id="dialog-ok-button" type="button" class="unselectable">OK</button>
+      <button id="dialog-ok-button" type="button">OK</button>
+    </div>
+  </div>
+  <div id="settings-pane">
+    <div id="settings-pane-wrapper">
+      <button id="close-settings-button" type="button">X</button>
+      <h3 id="settings-header">Settings</h3>
+      <h4 class="settings-subheader">General settings</h4>
+      <div class="setting-option">
+        <label for="storage-method">Save settings to:</label>
+        <select id="storage-method" class="unselectable">
+          <option value="localStorage" selected>Local Storage</option>
+          <option value="cookie">Cookie</option>
+        </select>
+      </div>
+      <h4 class="settings-subheader">Controls</h4>
+      <div class="setting-option">
+        <label for="disable-drawing-toggle">Release mouse when it leaves the grid:</label>
+        <input id="disable-drawing-toggle" type="checkbox">
+      </div>
+      <h4 class="settings-subheader">Graphics</h4>
+      <div id="settings-box-hide-seasonal-theme" class="setting-option">
+        <label for="seasonal-themes-toggle">Hide seasonal themes:</label>
+        <input id="seasonal-themes-toggle" type="checkbox">
+      </div>
+      <div class="setting-option">
+        <label for="background-toggle">Display background image:</label>
+        <input id="background-toggle" type="checkbox" checked>
+      </div>
+      <div id="background-blur-option-box" class="setting-option">
+        <label for="background-blur-slider">Background blur:</label>
+        <input id="background-blur-slider" type="range" min="0" max="10" value="2">
+      </div>
+      <div class="setting-option h-box">
+        <div>
+          <input id="light-mode-radio" type="radio" name="theme" value="light" checked>
+          <label for="light-mode-radio">Light mode</label>
+        </div>
+        <div>
+          <input id="dark-mode-radio" type="radio" name="theme" value="dark">
+          <label for="dark-mode-radio">Dark mode</label>
+        </div>
+      </div>
     </div>
   </div>
 </body>

@@ -3,6 +3,10 @@ body {
   margin: 0;
 }
 
+h1, h2, h3, h4 {
+  margin: 0;
+}
+
 .unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -10,6 +14,15 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.selectable {
+  -webkit-touch-callout: unset;
+  -webkit-user-select: unset;
+  -khtml-user-select: unset;
+  -moz-user-select: text;
+  -ms-user-select: unset;
+  user-select: text;
 }
 
 #bg-container {
@@ -81,8 +94,10 @@ body {
 
 #left-box {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Creates 2 columns */
-  grid-template-rows: repeat(4, auto);   /* Creates 4 rows */
+  /* Creates 2 columns */
+  grid-template-columns: repeat(2, 1fr);
+  /* Creates 4 rows */
+  grid-template-rows: repeat(4, auto);
   height: auto;
   width: 98%;
   order: 10;
@@ -184,7 +199,7 @@ body {
   background: linear-gradient(90deg, rgba(255, 255, 0, 1) 0%, rgba(255, 175, 0, 1) 100%);
 }
 
-#options-box {
+#settings-box {
   background: linear-gradient(90deg, rgba(171, 171, 171, 1) 0%, rgba(99, 99, 99, 1) 100%);
 }
 
@@ -362,4 +377,61 @@ button,
 #dialog-ok-button {
   font-size: large;
   padding: 8px 24px;
+}
+
+#settings-pane {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: larger;
+}
+
+#settings-pane-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  border-style: solid;
+  background-color: white;
+  padding: 8px;
+  gap: 8px;
+  border-radius: 8px;
+}
+
+#close-settings-button {
+  align-self: flex-end;
+  background-color: rgba(220, 220, 220, 0.8);
+  font-size: x-large;
+  width: 48px;
+  aspect-ratio: 1;
+}
+
+#settings-header {
+  font-size: xx-large;
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.settings-subheader {
+  font-size: x-large;
+  font-weight: bold;
+  margin-top: 16px;
+}
+
+.h-box {
+  display: flex;
+  flex-direction: row;
+}
+
+.v-box {
+  display: flex;
+  flex-direction: column;
 }
