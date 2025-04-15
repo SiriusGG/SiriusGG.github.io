@@ -45,7 +45,10 @@ var E;
     var closeSettingsButton = document.querySelector('#close-settings-button');
     var gameAndSubtext = document.querySelector('#game-and-subtext');
     var canvas = document.querySelector('#game-canvas');
+    var bottomBox = document.querySelector('#bottom-box');
     var subtext = document.querySelector('#subtext');
+    var continueButton = document.querySelector('#continue-button');
+    var newGameButton = document.querySelector('#new-game-button');
     var buttonPanelRight = document.querySelector('#button-panel-right');
     var clearButton = document.querySelector('#clear-button');
     var generateP1GridButton = document.querySelector('#random-p1-grid-button');
@@ -56,9 +59,6 @@ var E;
     var mirrorP1GridButton = document.querySelector('#mirror-p1-button');
     var playButton = document.querySelector('#play-button');
     var previewCanvas = document.querySelector('#p2-preview-canvas');
-    var bottomBox = document.querySelector('#bottom-box');
-    var continueButton = document.querySelector('#continue-button');
-    var newGameButton = document.querySelector('#new-game-button');
     var warningDialog = document.querySelector('#warning-dialog');
     var dialogMessage = document.querySelector('#dialog-message');
     var dialogOkButton = document.querySelector('#dialog-ok-button');
@@ -78,7 +78,7 @@ var E;
     var buttonsAndLookalikes = document.querySelectorAll('button, .looks-like-button');
     var leftBoxItems = document.querySelectorAll('#left-box > div');
     var leftBoxButtonIcons = document.querySelectorAll('.left-box-button-icon');
-    var elementsWithBorder = document.querySelectorAll('button, .looks-like-button, .left-box-button-icon, #left-box > div, #game-canvas, #button-panel-right, #player-tile-preview');
+    var elementsWithBorder = document.querySelectorAll('button, .looks-like-button, .left-box-button-icon, #left-box > div, #game-canvas, #button-panel-right, #player-tile-preview, #bottom-box');
     if (!body)
         throw new Error('body not found');
     if (!noJs)
@@ -115,8 +115,14 @@ var E;
         throw new Error('Element #game-and-subtext not found');
     if (!canvas)
         throw new Error('Element #game-canvas not found');
+    if (!bottomBox)
+        throw new Error('Element #bottom-box not found');
     if (!subtext)
         throw new Error('Element #subtext not found');
+    if (!continueButton)
+        throw new Error('Element #continue-button not found');
+    if (!newGameButton)
+        throw new Error('Element #new-game-button not found');
     if (!buttonPanelRight)
         throw new Error('Element #button-panel-right not found');
     if (!clearButton)
@@ -137,12 +143,6 @@ var E;
         throw new Error('Element #play-button not found');
     if (!previewCanvas)
         throw new Error('Element #p2-preview-canvas not found');
-    if (!bottomBox)
-        throw new Error('Element #bottom-box not found');
-    if (!continueButton)
-        throw new Error('Element #continue-button not found');
-    if (!newGameButton)
-        throw new Error('Element #new-game-button not found');
     if (!warningDialog)
         throw new Error('Element #warning-dialog not found');
     if (!dialogMessage)
@@ -241,10 +241,22 @@ var E;
         return canvas;
     }
     E.getCanvas = getCanvas;
+    function getBottomBox() {
+        return bottomBox;
+    }
+    E.getBottomBox = getBottomBox;
     function getSubtext() {
         return subtext;
     }
     E.getSubtext = getSubtext;
+    function getContinueButton() {
+        return continueButton;
+    }
+    E.getContinueButton = getContinueButton;
+    function getNewGameButton() {
+        return newGameButton;
+    }
+    E.getNewGameButton = getNewGameButton;
     function getButtonPanelRight() {
         return buttonPanelRight;
     }
@@ -285,18 +297,6 @@ var E;
         return previewCanvas;
     }
     E.getPreviewCanvas = getPreviewCanvas;
-    function getBottomBox() {
-        return bottomBox;
-    }
-    E.getBottomBox = getBottomBox;
-    function getContinueButton() {
-        return continueButton;
-    }
-    E.getContinueButton = getContinueButton;
-    function getNewGameButton() {
-        return newGameButton;
-    }
-    E.getNewGameButton = getNewGameButton;
     function getWarningDialog() {
         return warningDialog;
     }
