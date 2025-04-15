@@ -27,7 +27,8 @@
   <meta name="robots" content="noindex, nofollow"> <!-- ToDo: Remove in final release -->
 </head>
 
-<body oncontextmenu="return false;">
+<!-- <body oncontextmenu="return false;"> --> <!-- ToDo: Reactivate for release -->
+<body> <!-- ToDo: Suppress context menu for release -->
   <div id="bg-container"></div>
   <h1 id="h1-title">Sirius GG's Conway's Game of Life PVP</h1>
   <h2 id="h2-slogan">Conway's Game of Life, but it is a 2 player PVP esports game.</h2>
@@ -103,7 +104,7 @@
       <button id="dialog-ok-button" type="button">OK</button>
     </div>
   </div>
-  <div id="settings-pane">
+  <div id="settings-pane" class="unselectable">
     <div id="settings-pane-wrapper">
       <button id="close-settings-button" type="button">X</button>
       <h3 id="settings-header">Settings</h3>

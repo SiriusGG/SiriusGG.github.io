@@ -25,6 +25,18 @@ h1, h2, h3, h4 {
   user-select: text;
 }
 
+.darkmode-text-color-imp {
+  color: white !important;
+}
+
+.darkmode-dark-background-imp {
+  background-color: #3C3C3C !important;
+}
+
+.darkmode-border-color-imp {
+  border-color: white !important;
+}
+
 #bg-container {
   position: absolute;
   width: 100%;
@@ -298,32 +310,6 @@ h1, h2, h3, h4 {
   font-size: x-large;
 }
 
-/*
-button {
-  border-style: solid;
-  border-radius: 4px;
-  border-width: 2px;
-  border-color: black;
-  cursor: pointer;
-  background-color: #DDDDDD;
-  padding: 2px;
-}
-
-.looks-like-button {
-  display: inline-block;
-  border-radius: 4px;
-  border-style: solid;
-  border-width: 2px;
-  border-color: black;
-  font-family: "Arial";
-  color: #000000;
-  cursor: pointer;
-  text-align: center;
-  background-color: #DDDDDD;
-  padding: 2px;
-}
-*/
-
 button,
 .looks-like-button {
   padding: 2px;
@@ -407,9 +393,10 @@ button,
 
 #close-settings-button {
   align-self: flex-end;
-  background-color: rgba(220, 220, 220, 0.8);
+  background-color: white;
   font-size: x-large;
   width: 48px;
+  color: black;
   aspect-ratio: 1;
 }
 
