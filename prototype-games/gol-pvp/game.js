@@ -407,7 +407,13 @@ var FileIO;
      * Imports a grid configuration from a string and updates the provided full grid based on the mode.
      *
      * @param content - The string content representing the grid configuration.
-     *                  Expected format: "metadata;metadata;metadata;data", where `data` is a comma-separated list of rows.
+     *                  Expected format:
+     *                  Line 1: "v:version"
+     *                  Line 2: "name:name"
+     *                  Line 3: "rows:number"
+     *                  Line 4: "cols:number"
+     *                  Line 5: "grid={"
+     *                  Lines 6+: Grid data with one row per line, each cell being a single digit
      * @param mode - The mode of the import.
      *               0: Player 1 grid (P1).
      *               1: Player 2 grid (P2).
@@ -853,8 +859,8 @@ var I;
             return;
         // unregister all existing event listeners
         unregisterMainMenuEventListeners(match);
-        E.getContinueButton().removeEventListener('click', match.continueGame.bind(match));
-        E.getNewGameButton().removeEventListener('click', match.newGamePlacement.bind(match));
+        E.getContinueButton().removeEventListener('click', handleContinueGameClick);
+        E.getNewGameButton().removeEventListener('click', handleNewGamePlacementClick);
         // add new event listeners
         // mouse placement
         canvas.addEventListener('mousedown', Placement.canvasMouseDownHandler);
@@ -871,17 +877,17 @@ var I;
         canvas.addEventListener('touchend', Placement.canvasTouchEndHandler);
         canvas.addEventListener('touchcancel', Placement.canvasTouchEndHandler);
         // buttons
-        E.getGenerateP1GridButton().addEventListener('click', grid.generateRandomP1Grid.bind(grid));
-        E.getGenerateP2GridButton().addEventListener('click', grid.generateRandomP2Grid.bind(grid));
+        E.getGenerateP1GridButton().addEventListener('click', handleGenerateP1GridClick);
+        E.getGenerateP2GridButton().addEventListener('click', handleGenerateP2GridClick);
         E.getExportButton().addEventListener('click', exportGridHandler);
-        E.getContinueButton().addEventListener('click', match.continueGame.bind(match));
-        E.getNewGameButton().addEventListener('click', match.newGamePlacement.bind(match));
+        E.getContinueButton().addEventListener('click', handleContinueGameClick);
+        E.getNewGameButton().addEventListener('click', handleNewGamePlacementClick);
         E.getImportP1GridButton().addEventListener('change', importP1GridHandler);
-        E.getClearButton().addEventListener('click', grid.clearGrid.bind(grid));
+        E.getClearButton().addEventListener('click', handleClearGridClick);
         E.getImportP2GridButton().addEventListener('change', importP2GridHandler);
-        E.getPlayButton().addEventListener('click', match.startRound.bind(match));
+        E.getPlayButton().addEventListener('click', handleStartRoundClick);
         E.getDialogOkButton().addEventListener('click', R.dialogOkHandler);
-        E.getMirrorP1GridButton().addEventListener('click', grid.mirrorP1Grid.bind(grid));
+        E.getMirrorP1GridButton().addEventListener('click', handleMirrorP1GridClick);
         E.getSettingsBox().addEventListener('click', R.showSettingsPane);
         // settings-pane listeners
         E.getCloseSettingsButton().addEventListener('click', R.hideSettingsPane);
@@ -890,8 +896,8 @@ var I;
         E.getSeasonalThemesToggle().addEventListener('change', handleSeasonalThemesToggleChange);
         E.getBackgroundToggle().addEventListener('change', handleBackgroundToggleChange);
         E.getBackgroundBlurSlider().addEventListener('input', handleBackgroundBlurSliderInput);
-        E.getLightModeRadio().addEventListener('change', function (event) { return handleLightModeRadioChange(event, grid.getInternalGrid()); });
-        E.getDarkModeRadio().addEventListener('change', function (event) { return handleDarkModeRadioChange(event, grid.getInternalGrid()); });
+        E.getLightModeRadio().addEventListener('change', handleLightModeRadioChangeWrapper);
+        E.getDarkModeRadio().addEventListener('change', handleDarkModeRadioChangeWrapper);
     }
     I.setupEventListeners = setupEventListeners;
     function unregisterMainMenuEventListeners(match) {
@@ -917,27 +923,51 @@ var I;
         canvas.removeEventListener('touchmove', Placement.canvasTouchMoveHandler);
         canvas.removeEventListener('touchend', Placement.canvasTouchEndHandler);
         canvas.removeEventListener('touchcancel', Placement.canvasTouchEndHandler);
-        E.getGenerateP1GridButton().removeEventListener('click', grid.generateRandomP1Grid);
-        E.getGenerateP2GridButton().removeEventListener('click', grid.generateRandomP2Grid);
+        E.getGenerateP1GridButton().removeEventListener('click', handleGenerateP1GridClick);
+        E.getGenerateP2GridButton().removeEventListener('click', handleGenerateP2GridClick);
         E.getExportButton().removeEventListener('click', exportGridHandler);
         E.getImportP1GridButton().removeEventListener('change', importP1GridHandler);
-        E.getClearButton().removeEventListener('click', grid.clearGrid);
+        E.getClearButton().removeEventListener('click', handleClearGridClick);
         E.getImportP2GridButton().removeEventListener('change', importP2GridHandler);
-        E.getPlayButton().removeEventListener('click', match.startRound);
+        E.getPlayButton().removeEventListener('click', handleStartRoundClick);
         E.getDialogOkButton().removeEventListener('click', R.dialogOkHandler);
-        E.getMirrorP1GridButton().removeEventListener('click', grid.mirrorP1Grid);
+        E.getMirrorP1GridButton().removeEventListener('click', handleMirrorP1GridClick);
         E.getSettingsBox().removeEventListener('click', R.showSettingsPane);
         // settings-pane listeners
         E.getCloseSettingsButton().removeEventListener('click', R.hideSettingsPane);
-        E.getStorageMethodSelect().addEventListener('change', handleStorageMethodChange);
-        E.getDisableDrawingToggle().addEventListener('change', handleDisableDrawingToggleChange);
-        E.getSeasonalThemesToggle().addEventListener('change', handleSeasonalThemesToggleChange);
-        E.getBackgroundToggle().addEventListener('change', handleBackgroundToggleChange);
-        E.getBackgroundBlurSlider().addEventListener('input', handleBackgroundBlurSliderInput);
-        E.getLightModeRadio().removeEventListener('change', function (event) { return handleLightModeRadioChange(event, grid.getInternalGrid()); });
-        E.getDarkModeRadio().removeEventListener('change', function (event) { return handleDarkModeRadioChange(event, grid.getInternalGrid()); });
+        E.getStorageMethodSelect().removeEventListener('change', handleStorageMethodChange);
+        E.getDisableDrawingToggle().removeEventListener('change', handleDisableDrawingToggleChange);
+        E.getSeasonalThemesToggle().removeEventListener('change', handleSeasonalThemesToggleChange);
+        E.getBackgroundToggle().removeEventListener('change', handleBackgroundToggleChange);
+        E.getBackgroundBlurSlider().removeEventListener('input', handleBackgroundBlurSliderInput);
+        E.getLightModeRadio().removeEventListener('change', handleLightModeRadioChangeWrapper);
+        E.getDarkModeRadio().removeEventListener('change', handleDarkModeRadioChangeWrapper);
     }
     I.unregisterMainMenuEventListeners = unregisterMainMenuEventListeners;
+    function handleGenerateP1GridClick() {
+        var grid = match.getGridObject();
+        grid.generateRandomP1Grid();
+    }
+    function handleGenerateP2GridClick() {
+        var grid = match.getGridObject();
+        grid.generateRandomP2Grid();
+    }
+    function handleClearGridClick() {
+        var grid = match.getGridObject();
+        grid.clearGrid();
+    }
+    function handleMirrorP1GridClick() {
+        var grid = match.getGridObject();
+        grid.mirrorP1Grid();
+    }
+    function handleLightModeRadioChangeWrapper(event) {
+        var grid = match.getGridObject().getInternalGrid();
+        handleLightModeRadioChange(event, grid);
+    }
+    function handleDarkModeRadioChangeWrapper(event) {
+        var grid = match.getGridObject().getInternalGrid();
+        handleDarkModeRadioChange(event, grid);
+    }
     function exportGridHandler() {
         FileIO.downloadConfiguration(grid);
     }
@@ -984,6 +1014,15 @@ var I;
         }
     }
     I.handleContinueDragWhenMouseLeavesCanvas = handleContinueDragWhenMouseLeavesCanvas;
+    function handleContinueGameClick() {
+        match.continueGame();
+    }
+    function handleNewGamePlacementClick() {
+        match.newGamePlacement();
+    }
+    function handleStartRoundClick() {
+        match.startRound();
+    }
 })(I || (I = {}));
 var Match;
 (function (Match_1) {
