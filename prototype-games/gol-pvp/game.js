@@ -9,10 +9,10 @@ var C;
     C.LOOP_CHECK_GENERATIONS = 30;
     C.INITIAL_SLEEP_TIME = 400;
     C.FILE_EXTENSION = '.gol';
-    C.GAME_VERSION = 'v0.1.0';
-    C.SAVE_FILE_VERSION = '1.0.0'; // not allowed to ever contain a ";" in it for save file reasons.
+    C.GAME_VERSION = 'v0.2.0';
+    C.SAVE_FILE_VERSION = '2.0.0';
     C.PREVIEW_CANVAS_SIZE = 200;
-    C.DEBUG = true; // ToDo: Deactivate for release
+    C.DEBUG = false; // ToDo: Set to false for release
 })(C || (C = {}));
 var D;
 (function (D) {
@@ -418,49 +418,33 @@ var FileIO;
      */
     function importGrid(content, mode, fullGrid) {
         D.debugLog('importGrid starts');
-        // ToDo: Validate and use the other information in a meaningful way
-        var parts = content.split(';');
-        if (parts.length < 4) {
-            throw new Error('Invalid input format: missing data section');
+        var lines = content.split('\n');
+        if (lines.length < 5 || lines[0].indexOf('v:') !== 0 || lines[4].indexOf('grid={') !== 0) {
+            throw new Error('Invalid input format: missing or malformed metadata');
         }
-        var rows = parts[3].split(',');
-        var grid = [];
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];
-            var rowArray = [];
-            for (var j = 0; j < row.length; j++) {
-                var current = parseInt(row[j], 10);
-                rowArray.push(current);
-            }
-            grid.push(rowArray);
-        }
+        var rows = parseInt(lines[2].split(':')[1], 10);
+        var cols = parseInt(lines[3].split(':')[1], 10);
+        var gridData = lines.slice(5, 5 + rows).map(function (line) { return line.trim(); });
+        var grid = gridData.map(function (row) { return row.split('').map(function (cell) { return parseInt(cell, 10); }); });
         if (mode === 0) {
             D.debugLog('mode is 0 (P1)');
-            D.debugLog('checking condtions');
-            if (grid.length === C.PLACEMENT_GRID_ROWS && grid[0].length === C.PLACEMENT_GRID_COLS) {
-                D.debugLog('conditions passed');
-                for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
-                    for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
+            if (grid.length === rows && grid[0].length === cols) {
+                for (var row = 0; row < rows; row++) {
+                    for (var col = 0; col < cols; col++) {
                         fullGrid[row + 1][col + 1] = grid[row][col];
                     }
                 }
-                D.debugLog('iterated over grid');
             }
         }
         else if (mode === 1) {
             D.debugLog('mode is 1 (P2)');
-            D.debugLog('translating grid');
             var p2Grid = Grid.Grid.translateP1GridToP2Grid(grid);
-            D.debugLog('grid translated');
-            D.debugLog('checking condtions');
-            if (p2Grid.length === C.PLACEMENT_GRID_ROWS && p2Grid[0].length === C.PLACEMENT_GRID_COLS) {
-                D.debugLog('conditions passed');
-                for (var row = 0; row < C.PLACEMENT_GRID_ROWS; row++) {
-                    for (var col = 0; col < C.PLACEMENT_GRID_COLS; col++) {
-                        fullGrid[row + 1][C.PLACEMENT_GRID_COLS + col + 2] = p2Grid[row][col];
+            if (p2Grid.length === rows && p2Grid[0].length === cols) {
+                for (var row = 0; row < rows; row++) {
+                    for (var col = 0; col < cols; col++) {
+                        fullGrid[row + 1][cols + col + 2] = p2Grid[row][col];
                     }
                 }
-                D.debugLog('iterated over grid');
             }
         }
         D.debugLog('importGrid ends');
@@ -525,20 +509,18 @@ var Grid;
         };
         Grid.prototype.exportP1Grid = function (configurationName) {
             var gridString = '';
-            gridString += 'v:' + C.SAVE_FILE_VERSION;
-            gridString += ';';
-            gridString += configurationName;
-            gridString += ';';
-            gridString += 'cols:' + C.PLACEMENT_GRID_COLS + ',rows:' + C.PLACEMENT_GRID_ROWS;
-            gridString += ';';
+            gridString += "v:".concat(C.SAVE_FILE_VERSION, "\n");
+            gridString += "name:".concat(configurationName, "\n");
+            gridString += "cols:".concat(C.PLACEMENT_GRID_COLS, "\n");
+            gridString += "rows:".concat(C.PLACEMENT_GRID_ROWS, "\n");
+            gridString += "grid={\n";
             for (var row = 1; row <= C.PLACEMENT_GRID_ROWS; row++) {
                 for (var col = 1; col <= C.PLACEMENT_GRID_COLS; col++) {
-                    gridString += '' + this.grid[row][col];
+                    gridString += this.grid[row][col];
                 }
-                if (row != C.PLACEMENT_GRID_ROWS) {
-                    gridString += ',';
-                }
+                gridString += '\n';
             }
+            gridString += '}';
             return gridString;
         };
         Grid.prototype.generateRandomP1Grid = function () {
