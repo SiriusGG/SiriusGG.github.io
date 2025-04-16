@@ -5,7 +5,8 @@
 button,
 .looks-like-button,
 #p2-preview-canvas,
-.left-box-button-icon {
+.left-box-button-icon,
+#settings-pane-wrapper {
   border-color: #FFB6C1;
 }
 
