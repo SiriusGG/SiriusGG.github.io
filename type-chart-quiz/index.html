@@ -4,38 +4,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pokemon Type Chart Quiz</title>
-  <meta name="description" content="Test your knowledge of the Pokemon type chart. Fill in the full 18x18 effectiveness chart from memory or calculate attack effectiveness against one or two defending types, then get instant scoring.">
-  <meta name="keywords" content="pokemon type chart, pokemon type quiz, pokemon effectiveness chart, super effective, not very effective, pokemon type matchups, type chart quiz">
+  <title>Pokémon Type Chart Quiz</title>
+  <meta name="description" content="Test your knowledge of the Pokémon type chart. Fill in the full 18x18 effectiveness chart from memory or calculate attack effectiveness against one or two defending types, then get instant scoring.">
+  <meta name="keywords" content="pokemon type chart, pokemon type quiz, pokemon effectiveness chart, super effective, not very effective, pokemon type matchups, type chart quiz, pokemon, pokémon">
   <meta name="author" content="siriusgg.com">
   <link rel="canonical" href="https://siriusgg.com/type-chart-quiz/">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Pokemon Type Chart Quiz">
-  <meta property="og:description" content="Fill in the full Pokemon type chart from memory or calculate attack effectiveness in this free interactive quiz. Instant scoring included.">
+  <meta property="og:title" content="Pokémon Type Chart Quiz">
+  <meta property="og:description" content="Fill in the full Pokémon type chart from memory or calculate attack effectiveness in this free interactive quiz. Instant scoring included.">
   <meta property="og:url" content="https://siriusgg.com/type-chart-quiz/">
   <meta property="og:site_name" content="siriusgg.com">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Pokemon Type Chart Quiz">
-  <meta name="twitter:description" content="Fill in the full Pokemon type chart from memory or calculate attack effectiveness in this free interactive quiz.">
+  <meta name="twitter:title" content="Pokémon Type Chart Quiz">
+  <meta name="twitter:description" content="Fill in the full Pokémon type chart from memory or calculate attack effectiveness in this free interactive quiz.">
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Pokemon Type Chart Quiz",
-    "url": "https://siriusgg.com/type-chart-quiz",
-    "applicationCategory": "Game",
-    "operatingSystem": "Any",
-    "description": "An interactive quiz to test knowledge of the Pokemon type effectiveness chart, with a full chart fill-in mode and an effectiveness calculation mode.",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Pokemon Type Chart Quiz",
+      "url": "https://siriusgg.com/type-chart-quiz",
+      "applicationCategory": "Game",
+      "operatingSystem": "Any",
+      "description": "An interactive quiz to test knowledge of the Pokémon type effectiveness chart, with a full chart fill-in mode and an effectiveness calculation mode.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
     }
-  }
-</script>
+  </script>
 
   <link rel="stylesheet" href="./css/styles.css">
   <link rel="stylesheet" href="./css/fonts.css">
@@ -47,7 +47,7 @@
     <header class="site">
       <div class="lens" aria-hidden="true"></div>
       <div class="title-block">
-        <h1>Pokemon Type Chart Quiz</h1>
+        <h1>Pokémon Type Chart Quiz</h1>
         <p>Learn and test the 18-type effectiveness chart — fill in the whole grid, or calculate matchups on the fly.</p>
       </div>
       <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -140,7 +140,7 @@
             <div class="calc-line">Attacking move type</div>
             <div id="calc-attacker"></div>
             <span class="vs-arrow">▼</span>
-            <div class="calc-line">Defending Pokemon</div>
+            <div class="calc-line">Defending Pokémon</div>
             <div id="calc-defenders"></div>
 
             <div class="options" id="calc-options" role="group" aria-label="Answer options"></div>
@@ -156,6 +156,22 @@
     </main>
   </div>
 
+  <!-- Data layer -->
+  <script src="./js/types.js"></script>
+  <script src="./js/chart.js"></script>
+
+  <!-- Shared utilities -->
+  <script src="./js/type-utils.js"></script>
+  <script src="./js/dom-utils.js"></script>
+  <script src="./js/format-utils.js"></script>
+  <script src="./js/chart-table-builder.js"></script>
+
+  <!-- UI / mode controllers -->
+  <script src="./js/mode-switcher.js"></script>
+  <script src="./js/full-chart-mode.js"></script>
+  <script src="./js/calculation-mode.js"></script>
+
+  <!-- Entry point -->
   <script src="./js/script.js"></script>
 </body>
 

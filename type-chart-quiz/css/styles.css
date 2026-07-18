@@ -445,7 +445,7 @@ table.chart {
   border-collapse: collapse;
   width: 100%;
   min-width: 820px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 table.chart caption {
@@ -464,7 +464,7 @@ table.chart th, table.chart td {
 table.chart th {
   background: #efe9d8;
   font-weight: 700;
-  font-size: 11px;
+  font-size: 14px;
   white-space: nowrap;
 }
 
@@ -476,8 +476,7 @@ table.chart th.attacker-head, table.chart td.attacker-name {
 
 .col-head {
   padding: 8px 6px;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
+  writing-mode: sideways-lr;
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   min-width: 30px;
@@ -488,19 +487,20 @@ table.chart th.attacker-head, table.chart td.attacker-name {
   padding: 6px 10px;
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-  width: 200px;
+  min-width: 70px;
+  min-height: 30px;
 }
 
 td.cell {
-  width: 34px;
+  width: 30px;
   height: 30px;
-  min-width: 34px;
   cursor: pointer;
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 14px;
+  font-size: 40px;
   background: #fffdf8;
   user-select: none;
+  line-height: 0.725;
 }
 
 td.cell:hover {
