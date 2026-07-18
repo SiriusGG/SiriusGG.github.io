@@ -2,28 +2,184 @@
   "use strict";
 
   /* ---------------- Data ---------------- */
-  var TYPES = ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground",
-    "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"];
+  var TYPES = [
+    "Normal",
+    "Fire",
+    "Water",
+    "Grass",
+    "Electric",
+    "Ice",
+    "Fighting",
+    "Poison",
+    "Ground",
+    "Flying",
+    "Psychic",
+    "Bug",
+    "Rock",
+    "Ghost",
+    "Dragon",
+    "Dark",
+    "Steel",
+    "Fairy"
+  ];
 
   var CHART = {
-    Normal: { Rock: 0.5, Ghost: 0, Steel: 0.5 },
-    Fire: { Fire: 0.5, Water: 0.5, Grass: 2, Ice: 2, Bug: 2, Rock: 0.5, Dragon: 0.5, Steel: 2 },
-    Water: { Fire: 2, Water: 0.5, Grass: 0.5, Ground: 2, Rock: 2, Dragon: 0.5 },
-    Grass: { Fire: 0.5, Water: 2, Grass: 0.5, Poison: 0.5, Ground: 2, Flying: 0.5, Bug: 0.5, Rock: 2, Dragon: 0.5, Steel: 0.5 },
-    Electric: { Water: 2, Electric: 0.5, Grass: 0.5, Ground: 0, Flying: 2, Dragon: 0.5 },
-    Ice: { Fire: 0.5, Water: 0.5, Grass: 2, Ice: 0.5, Ground: 2, Flying: 2, Dragon: 2, Steel: 0.5 },
-    Fighting: { Normal: 2, Ice: 2, Poison: 0.5, Flying: 0.5, Psychic: 0.5, Bug: 0.5, Rock: 2, Ghost: 0, Dark: 2, Steel: 2, Fairy: 0.5 },
-    Poison: { Grass: 2, Poison: 0.5, Ground: 0.5, Rock: 0.5, Ghost: 0.5, Steel: 0, Fairy: 2 },
-    Ground: { Fire: 2, Grass: 0.5, Electric: 2, Poison: 2, Flying: 0, Bug: 0.5, Rock: 2, Steel: 2 },
-    Flying: { Grass: 2, Electric: 0.5, Fighting: 2, Bug: 2, Rock: 0.5, Steel: 0.5 },
-    Psychic: { Fighting: 2, Poison: 2, Psychic: 0.5, Dark: 0, Steel: 0.5 },
-    Bug: { Fire: 0.5, Grass: 2, Fighting: 0.5, Poison: 0.5, Flying: 0.5, Psychic: 2, Ghost: 0.5, Dark: 2, Steel: 0.5, Fairy: 0.5 },
-    Rock: { Fire: 2, Ice: 2, Fighting: 0.5, Ground: 0.5, Flying: 2, Bug: 2, Steel: 0.5 },
-    Ghost: { Normal: 0, Psychic: 2, Ghost: 2, Dark: 0.5 },
-    Dragon: { Dragon: 2, Steel: 0.5, Fairy: 0 },
-    Dark: { Fighting: 0.5, Psychic: 2, Ghost: 2, Dark: 0.5, Fairy: 0.5 },
-    Steel: { Fire: 0.5, Water: 0.5, Electric: 0.5, Ice: 2, Rock: 2, Steel: 0.5, Fairy: 2 },
-    Fairy: { Fire: 0.5, Fighting: 2, Poison: 0.5, Dragon: 2, Dark: 2, Steel: 0.5 }
+    Normal: {
+      Rock: 0.5,
+      Ghost: 0,
+      Steel: 0.5
+    },
+    Fire: {
+      Fire: 0.5,
+      Water: 0.5,
+      Grass: 2,
+      Ice: 2,
+      Bug: 2,
+      Rock: 0.5,
+      Dragon: 0.5,
+      Steel: 2
+    },
+    Water: {
+      Fire: 2,
+      Water: 0.5,
+      Grass: 0.5,
+      Ground: 2,
+      Rock: 2,
+      Dragon: 0.5
+    },
+    Grass: {
+      Fire: 0.5,
+      Water: 2,
+      Grass: 0.5,
+      Poison: 0.5,
+      Ground: 2,
+      Flying: 0.5,
+      Bug: 0.5,
+      Rock: 2,
+      Dragon: 0.5,
+      Steel: 0.5
+    },
+    Electric: {
+      Water: 2,
+      Electric: 0.5,
+      Grass: 0.5,
+      Ground: 0,
+      Flying: 2,
+      Dragon: 0.5
+    },
+    Ice: {
+      Fire: 0.5,
+      Water: 0.5,
+      Grass: 2,
+      Ice: 0.5,
+      Ground: 2,
+      Flying: 2,
+      Dragon: 2,
+      Steel: 0.5
+    },
+    Fighting: {
+      Normal: 2,
+      Ice: 2,
+      Poison: 0.5,
+      Flying: 0.5,
+      Psychic: 0.5,
+      Bug: 0.5,
+      Rock: 2,
+      Ghost: 0,
+      Dark: 2,
+      Steel: 2,
+      Fairy: 0.5
+    },
+    Poison: {
+      Grass: 2,
+      Poison: 0.5,
+      Ground: 0.5,
+      Rock: 0.5,
+      Ghost: 0.5,
+      Steel: 0,
+      Fairy: 2
+    },
+    Ground: {
+      Fire: 2,
+      Grass: 0.5,
+      Electric: 2,
+      Poison: 2,
+      Flying: 0,
+      Bug: 0.5,
+      Rock: 2,
+      Steel: 2
+    },
+    Flying: {
+      Grass: 2,
+      Electric: 0.5,
+      Fighting: 2,
+      Bug: 2,
+      Rock: 0.5,
+      Steel: 0.5
+    },
+    Psychic: {
+      Fighting: 2,
+      Poison: 2,
+      Psychic: 0.5,
+      Dark: 0,
+      Steel: 0.5
+    },
+    Bug: {
+      Fire: 0.5,
+      Grass: 2,
+      Fighting: 0.5,
+      Poison: 0.5,
+      Flying: 0.5,
+      Psychic: 2,
+      Ghost: 0.5,
+      Dark: 2,
+      Steel: 0.5,
+      Fairy: 0.5
+    },
+    Rock: {
+      Fire: 2,
+      Ice: 2,
+      Fighting: 0.5,
+      Ground: 0.5,
+      Flying: 2,
+      Bug: 2,
+      Steel: 0.5
+    },
+    Ghost: {
+      Normal: 0,
+      Psychic: 2,
+      Ghost: 2,
+      Dark: 0.5
+    },
+    Dragon: {
+      Dragon: 2,
+      Steel: 0.5,
+      Fairy: 0
+    },
+    Dark: {
+      Fighting: 0.5,
+      Psychic: 2,
+      Ghost: 2,
+      Dark: 0.5,
+      Fairy: 0.5
+    },
+    Steel: {
+      Fire: 0.5,
+      Water: 0.5,
+      Electric: 0.5,
+      Ice: 2,
+      Rock: 2,
+      Steel: 0.5,
+      Fairy: 2
+    },
+    Fairy: {
+      Fire: 0.5,
+      Fighting: 2,
+      Poison: 0.5,
+      Dragon: 2,
+      Dark: 2,
+      Steel: 0.5
+    }
   };
 
   function multiplier(attacker, defender) {
@@ -64,7 +220,6 @@
   var chartBody = document.getElementById("chart-body");
   var currentTool = "super";
   var userChart = {}; // userChart[attacker][defender] = category
-  var submitted = false;
 
   TYPES.forEach(function (a) {
     userChart[a] = {};
@@ -101,7 +256,6 @@
         td.dataset.defender = d;
         td.textContent = "";
         td.addEventListener("click", function () {
-          if (submitted) return;
           setCell(a, d, currentTool);
         });
         tr.appendChild(td);
@@ -128,10 +282,8 @@
   });
 
   document.getElementById("reset-full").addEventListener("click", function () {
-    submitted = false;
     document.getElementById("full-results").classList.remove("show");
     TYPES.forEach(function (a) { TYPES.forEach(function (d) { setCell(a, d, "neutral"); }); });
-    chartBody.querySelectorAll("td.cell").forEach(function (td) { td.classList.remove("locked"); });
   });
 
   function renderStaticChart(headTarget, bodyTarget, valueFn, markMistakes) {
@@ -150,8 +302,8 @@
         td.className = "cell locked val-" + cat;
         td.textContent = SYMBOLS[cat];
         if (markMistakes) {
-          var correctCat = categoryOf(multiplier(a, d));
-          if (cat !== correctCat) td.classList.add("mistake");
+          var isMistake = userChart[a][d] !== categoryOf(multiplier(a, d));
+          if (isMistake) td.classList.add("mistake");
         }
         tr.appendChild(td);
       });
@@ -160,9 +312,6 @@
   }
 
   document.getElementById("submit-full").addEventListener("click", function () {
-    submitted = true;
-    chartBody.querySelectorAll("td.cell").forEach(function (td) { td.classList.add("locked"); });
-
     var totals = { super: 0, neutral: 0, nve: 0, no: 0 };
     var correctCounts = { super: 0, neutral: 0, nve: 0, no: 0 };
     TYPES.forEach(function (a) {
@@ -175,7 +324,9 @@
     var totalPossible = TYPES.length * TYPES.length;
     var totalCorrect = correctCounts.super + correctCounts.neutral + correctCounts.nve + correctCounts.no;
 
-    function pct(x, y) { return y === 0 ? "0.0" : (100 * x / y).toFixed(1); }
+    function pct(x, y) {
+      return y === 0 ? "0.0" : (100 * x / y).toFixed(1);
+    }
 
     var lines = document.getElementById("score-lines");
     lines.innerHTML =
@@ -194,8 +345,10 @@
     renderStaticChart(
       document.getElementById("correct-head-row"),
       document.getElementById("correct-body"),
-      function (a, d) { return categoryOf(multiplier(a, d)); },
-      false
+      function (a, d) {
+        return categoryOf(multiplier(a, d));
+      },
+      true
     );
 
     document.getElementById("full-results").classList.add("show");
@@ -217,7 +370,10 @@
     return "x" + m;
   }
 
-  var calcScore = { correct: 0, total: 0 };
+  var calcScore = {
+    correct: 0,
+    total: 0
+  };
   var currentQuestion = null;
 
   function makeBadge(type) {
@@ -233,7 +389,9 @@
     var d1 = TYPES[Math.floor(Math.random() * TYPES.length)];
     var d2 = null;
     if (twoTypes) {
-      do { d2 = TYPES[Math.floor(Math.random() * TYPES.length)]; } while (d2 === d1);
+      do {
+        d2 = TYPES[Math.floor(Math.random() * TYPES.length)];
+      } while (d2 === d1);
     }
     var m = multiplier(attacker, d1) * (d2 ? multiplier(attacker, d2) : 1);
     m = Math.round(m * 100) / 100;
