@@ -86,7 +86,17 @@ class CalculationMode {
 
     this.feedbackElement.textContent = "";
     this.feedbackElement.className = "calc-feedback";
-    this.nextButton.disabled = false;
+    this.setNextButtonEnabled(false);
+  }
+
+  /**
+   * Enables/disables the "Next question" button. While disabled, a
+   * tooltip prompts the user to pick an answer first.
+   * @param {boolean} isEnabled
+   */
+  setNextButtonEnabled(isEnabled) {
+    this.nextButton.disabled = !isEnabled;
+    this.nextButton.title = isEnabled ? "" : "Select an answer to continue";
   }
 
   renderOptions() {
@@ -117,6 +127,7 @@ class CalculationMode {
     this.markOptionButtons(isCorrect, chosenButtonElement);
     this.renderFeedback(isCorrect);
     this.updateScoreDisplay();
+    this.setNextButtonEnabled(true);
   }
 
   markOptionButtons(isCorrect, chosenButtonElement) {
