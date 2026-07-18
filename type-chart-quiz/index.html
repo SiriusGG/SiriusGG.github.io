@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemon Type Chart Quiz</title>
+  <meta name="description" content="Test your knowledge of the Pokemon type chart. Fill in the full 18x18 effectiveness chart from memory or calculate attack effectiveness against one or two defending types, then get instant scoring.">
+  <meta name="keywords" content="pokemon type chart, pokemon type quiz, pokemon effectiveness chart, super effective, not very effective, pokemon type matchups, type chart quiz">
+  <meta name="author" content="siriusgg.com">
+  <link rel="canonical" href="https://siriusgg.com/type-chart-quiz/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pokemon Type Chart Quiz">
+  <meta property="og:description" content="Fill in the full Pokemon type chart from memory or calculate attack effectiveness in this free interactive quiz. Instant scoring included.">
+  <meta property="og:url" content="https://siriusgg.com/type-chart-quiz/">
+  <meta property="og:site_name" content="siriusgg.com">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Pokemon Type Chart Quiz">
+  <meta name="twitter:description" content="Fill in the full Pokemon type chart from memory or calculate attack effectiveness in this free interactive quiz.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Pokemon Type Chart Quiz",
+    "url": "https://siriusgg.com/type-chart-quiz",
+    "applicationCategory": "Game",
+    "operatingSystem": "Any",
+    "description": "An interactive quiz to test knowledge of the Pokemon type effectiveness chart, with a full chart fill-in mode and an effectiveness calculation mode.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+</script>
+
+  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="./css/fonts.css">
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header class="site">
+      <div class="lens" aria-hidden="true"></div>
+      <div class="title-block">
+        <h1>Pokemon Type Chart Quiz</h1>
+        <p>Learn and test the 18-type effectiveness chart — fill in the whole grid, or calculate matchups on the fly.</p>
+      </div>
+      <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+    </header>
+
+    <nav class="modes" aria-label="Quiz mode selection">
+      <button class="mode-btn active" id="tab-full" data-mode="full">Full Type Chart</button>
+      <button class="mode-btn" id="tab-calc" data-mode="calc">Calculate the Effectiveness</button>
+    </nav>
+
+    <main>
+      <!-- ======================= FULL CHART MODE ======================= -->
+      <section class="mode active" id="mode-full" aria-labelledby="full-heading">
+        <div class="screen">
+          <span class="screw tl" aria-hidden="true"></span><span class="screw tr" aria-hidden="true"></span>
+          <span class="screw bl" aria-hidden="true"></span><span class="screw br" aria-hidden="true"></span>
+          <h2 id="full-heading">Fill In The Full Type Chart</h2>
+          <p class="lead">Every cell starts as <strong>Neutral</strong>. Pick a tool below, then click cells to paint in the attacker (row) vs. defender (column) effectiveness. Submit when you're done.</p>
+
+          <div class="toolbar" role="group" aria-label="Effectiveness tool selection">
+            <button class="tool-btn active" data-tool="super"><span class="sym">+</span>Super effective</button>
+            <button class="tool-btn" data-tool="neutral"><span class="sym"> </span>Neutral</button>
+            <button class="tool-btn" data-tool="nve"><span class="sym">−</span>Not very effective</button>
+            <button class="tool-btn" data-tool="no"><span class="sym">0</span>No effect</button>
+          </div>
+
+          <div class="chart-scroll">
+            <table class="chart" id="full-chart">
+              <caption>Rows = attacking type, columns = defending type. Click a cell to apply the selected tool.</caption>
+              <thead>
+                <tr id="chart-head-row"></tr>
+              </thead>
+              <tbody id="chart-body"></tbody>
+            </table>
+          </div>
+
+          <div class="legend-row">
+            <span><b>+</b> = super effective (x2)</span>
+            <span>blank = neutral (x1)</span>
+            <span><b>−</b> = not very effective (x0.5)</span>
+            <span><b>0</b> = no effect (x0)</span>
+          </div>
+
+          <div class="action-row">
+            <button class="btn primary" id="submit-full">Submit answer</button>
+            <button class="btn" id="reset-full">Reset chart</button>
+          </div>
+
+          <div class="results" id="full-results">
+            <h2>Your Results</h2>
+            <div class="score-lines" id="score-lines"></div>
+
+            <div class="result-charts-container">
+              <div>
+                <h3>Your chart (mistakes highlighted)</h3>
+                <div class="chart-scroll">
+                  <table class="chart" id="your-chart-view">
+                    <thead>
+                      <tr id="your-head-row"></tr>
+                    </thead>
+                    <tbody id="your-body"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div>
+                <h3>Correct chart</h3>
+                <div class="chart-scroll">
+                  <table class="chart" id="correct-chart-view">
+                    <thead>
+                      <tr id="correct-head-row"></tr>
+                    </thead>
+                    <tbody id="correct-body"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================= CALCULATE MODE ======================= -->
+      <section class="mode" id="mode-calc" aria-labelledby="calc-heading">
+        <div class="screen">
+          <span class="screw tl" aria-hidden="true"></span><span class="screw tr" aria-hidden="true"></span>
+          <span class="screw bl" aria-hidden="true"></span><span class="screw br" aria-hidden="true"></span>
+          <h2 id="calc-heading">Calculate The Effectiveness</h2>
+          <p class="lead">An attack is used against one or two defending types. Pick the resulting damage multiplier.</p>
+
+          <div class="calc-question">
+            <div class="calc-line">Attacking move type</div>
+            <div id="calc-attacker"></div>
+            <span class="vs-arrow">▼</span>
+            <div class="calc-line">Defending Pokemon</div>
+            <div id="calc-defenders"></div>
+
+            <div class="options" id="calc-options" role="group" aria-label="Answer options"></div>
+            <div class="calc-feedback" id="calc-feedback" role="status"></div>
+          </div>
+
+          <div class="calc-footer">
+            <button class="btn accent" id="calc-next">Next question</button>
+            <div class="calc-score" id="calc-score">Score: 0/0 (—%)</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site">
+      <p>Pokemon Type Chart Quiz — an unofficial fan-made study tool. Pokemon is a trademark of Nintendo / Game Freak / Creatures Inc.</p>
+    </footer>
+  </div>
+
+  <script src="./js/script.js"></script>
+</body>
+
+</html>
