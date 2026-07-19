@@ -46,3 +46,7 @@ function createTypeBadge(type) {
     text: type
   });
 }
+
+function getBasePath() {
+  return "/type-chart-quiz/";
+}

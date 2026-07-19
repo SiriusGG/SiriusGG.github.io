@@ -164,13 +164,6 @@ header.site {
   overflow: hidden;
 }
 
-header.site::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 90% -20%, rgba(255, 255, 255, 0.18), transparent 55%);
-}
-
 .lens {
   width: 46px;
   height: 46px;
@@ -356,6 +349,7 @@ section.mode.active {
 .tool-btn .sym {
   font-family: var(--font-mono);
   font-weight: 700;
+  font-size: 24px;
   width: 22px;
   height: 22px;
   display: flex;
@@ -363,6 +357,8 @@ section.mode.active {
   justify-content: center;
   border-radius: 6px;
   background: var(--grid-line);
+  vertical-align: middle;
+  line-height: 0.8;
 }
 
 .tool-btn:hover {
@@ -434,17 +430,19 @@ section.mode.active {
 }
 
 /* ---------- Chart table ---------- */
-.chart-scroll {
-  overflow-x: auto;
+.chart-container {
   border-radius: 12px;
   border: 1px solid var(--panel-line);
+  text-align: center;
 }
 
 table.chart {
   border-collapse: collapse;
-  width: 100%;
-  min-width: 820px;
+  width: auto;
+  margin: 0 auto;
   font-size: 14px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 table.chart caption {
@@ -467,10 +465,21 @@ table.chart th {
   white-space: nowrap;
 }
 
-table.chart th.attacker-head, table.chart td.attacker-name {
+table.chart th.attacker-head, table.chart td.attacker-name, table.chart th.corner {
   position: sticky;
   left: 0;
   z-index: 2;
+  width: 70px;
+  max-width: 70px;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.corner-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .col-head {
@@ -496,7 +505,7 @@ td.cell {
   cursor: pointer;
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 40px;
+  font-size: 34px;
   background: #fffdf8;
   user-select: none;
   line-height: 0.725;

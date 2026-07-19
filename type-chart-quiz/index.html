@@ -52,7 +52,7 @@
       <div class="lens" aria-hidden="true"></div>
       <div class="title-block">
         <h1>Pokémon Type Chart Quiz</h1>
-        <p>Learn and test the full 18-type Pokemon effectiveness chart — fill in the whole grid from memory, or calculate super effective and not very effective matchups on the fly.</p>
+        <p>Learn and test the full 18-type Pokemon effectiveness chart</p>
       </div>
       <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
     </header>
@@ -68,7 +68,7 @@
         <div class="screen">
           <span class="screw tl" aria-hidden="true"></span><span class="screw tr" aria-hidden="true"></span>
           <span class="screw bl" aria-hidden="true"></span><span class="screw br" aria-hidden="true"></span>
-          <h2 id="full-heading">Fill In The Full Type Chart</h2>
+          <h2 id="full-heading">Fill in the full Type Chart</h2>
           <p class="lead">Every cell starts as <strong>Neutral</strong>. Pick an effectiveness below, then click cells to fill in the attacker (row) vs. defender (column) effectiveness.</p>
 
           <div class="toolbar" role="group" aria-label="Effectiveness tool selection">
@@ -78,7 +78,7 @@
             <button class="tool-btn" data-tool="no"><span class="sym">0</span>No effect</button>
           </div>
 
-          <div class="chart-scroll">
+          <div class="chart-container">
             <table class="chart" id="full-chart">
               <caption>Rows = attacking type, columns = defending type. Click a cell to apply the selected tool.</caption>
               <thead>
@@ -86,13 +86,6 @@
               </thead>
               <tbody id="chart-body"></tbody>
             </table>
-          </div>
-
-          <div class="legend-row">
-            <span><b>+</b> = super effective (x2)</span>
-            <span>blank = neutral (x1)</span>
-            <span><b>−</b> = not very effective (x0.5)</span>
-            <span><b>0</b> = no effect (x0)</span>
           </div>
 
           <div class="action-row">
@@ -106,8 +99,8 @@
 
             <div class="result-charts-container">
               <div>
-                <h3>Your chart (mistakes highlighted)</h3>
-                <div class="chart-scroll">
+                <h3>Your chart</h3>
+                <div class="chart-container">
                   <table class="chart" id="your-chart-view">
                     <thead>
                       <tr id="your-head-row"></tr>
@@ -118,7 +111,7 @@
               </div>
               <div>
                 <h3>Correct chart</h3>
-                <div class="chart-scroll">
+                <div class="chart-container">
                   <table class="chart" id="correct-chart-view">
                     <thead>
                       <tr id="correct-head-row"></tr>

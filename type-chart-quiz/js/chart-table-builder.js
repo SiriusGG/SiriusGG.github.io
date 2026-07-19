@@ -20,7 +20,12 @@ class ChartTableBuilder {
    */
   buildHeaderRow(rowElement) {
     rowElement.innerHTML = "";
-    rowElement.appendChild(createElement("th", { className: "corner", text: "Attacker \\ Defender" }));
+    const cornerTh = createElement("th", { className: "corner" });
+    const cornerImg = document.createElement("img");
+    cornerImg.src = getBasePath() + "/graphics/corner_cell_icon.png";
+    cornerImg.classList.add("corner-image");
+    cornerTh.appendChild(cornerImg);
+    rowElement.appendChild(cornerTh);
     TYPE_LIST.forEach((defenderType) => {
       rowElement.appendChild(
         createElement("th", {
