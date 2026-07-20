@@ -443,6 +443,7 @@ table.chart {
   font-size: 14px;
   margin-top: 8px;
   margin-bottom: 8px;
+  table-layout: fixed;
 }
 
 table.chart caption {
@@ -508,7 +509,9 @@ td.cell {
   font-size: 34px;
   background: #fffdf8;
   user-select: none;
-  line-height: 0.725;
+  vertical-align: middle;
+  line-height: 0;
+  overflow: hidden;
 }
 
 td.cell:hover {
